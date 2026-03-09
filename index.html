@@ -3,87 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Simple Progress | ניהול התקדמות חכם</title>
+    <title>AI-Simple Progress | הדרך שלך להצלחה</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --wolt-blue: #00c2e8; --wolt-dark: #1e293b; --bg: #f8fafc; }
-        body { font-family: 'Assistant', 'Segoe UI', sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 0; margin: 0; min-height: 100vh; color: var(--wolt-dark); }
+        :root {
+            /* One Zero Inspired Dark Palette */
+            --oz-bg: #0A111F; /* Deepest blue/dark slate */
+            --oz-card: #0E273A; /* Slightly lighter deep teal */
+            --oz-accent: #00F2FF; /* Vibrant neon cyan */
+            --oz-text-primary: #FFFFFF; /* Pure white for titles */
+            --oz-text-secondary: #BCC3D2; /* Premium silver/gray for content */
+            --oz-btn-dark: #1F304B; /* Premium dark button background */
+            --oz-border: rgba(188, 195, 210, 0.1); /* Minimalist silver borders */
+            --oz-frosted: rgba(10, 17, 31, 0.75); /* Frosted frosted frosted effect background */
+        }
+        
+        body {
+            font-family: 'Assistant', 'Segoe UI', sans-serif;
+            background: var(--oz-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            color: var(--oz-text-secondary);
+            overflow-x: hidden;
+        }
+        
+        /* Premium Frosted Frosted Frosted Brand Header */
+        .brand-header {
+            width: 100%;
+            background: var(--oz-frosted);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            position: sticky;
+            top: 0;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            border-bottom: 1px solid var(--oz-border);
+            max-width: 100vw;
+            box-sizing: border-box;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        
+        /* One Zero Brand Block with Sleek Text */
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-        /* כותרת עליונה */
-        .brand-header { width: 100%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); position: sticky; top: 0; padding: 16px 0; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03); z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .brand-name { font-size: 20px; font-weight: 800; color: var(--wolt-dark); display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
-        .brand-icon { display: flex; align-items: center; justify-content: center; color: var(--wolt-blue); }
-        .logout-btn { position: absolute; left: 20px; background: none; border: 1px solid #e2e8f0; color: #64748b; border-radius: 10px; padding: 6px 14px; cursor: pointer; font-size: 13px; font-weight: 600; display: none; transition: 0.2s; }
-        .logout-btn:hover { background: #f1f5f9; color: var(--wolt-dark); }
+        /* ONE above ZERO brand block inspired by provided image */
+        .onezero-block {
+            background-color: var(--oz-card);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--oz-border);
+            text-align: center;
+        }
+        
+        .oz-one-text {
+            color: var(--oz-text-primary);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .oz-zero-text {
+            color: var(--oz-text-primary);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--oz-text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        /* Premium Minimalist Gear Icon from conceptual reference */
+        .brand-icon {
+            color: var(--oz-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--oz-border);
+            color: var(--oz-text-secondary);
+            border-radius: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: none;
+        }
+        .logout-btn:hover {
+            background: var(--oz-card);
+            color: var(--oz-text-primary);
+            border-color: var(--oz-text-secondary);
+        }
 
         /* מסך כניסה */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; padding: 20px; width: 100%; box-sizing: border-box; }
-        .login-card { background: white; padding: 45px 35px; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.04); width: 100%; max-width: 380px; text-align: center; border: 1px solid rgba(0,0,0,0.02); }
-        .login-card h2 { margin-top: 0; color: var(--wolt-dark); }
-        .login-btn { background: white; color: #333; border: 1px solid #e2e8f0; width: 100%; padding: 16px; border-radius: 16px; cursor: pointer; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .login-btn:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
-        .login-btn:active { transform: scale(0.98); }
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .login-card {
+            background: var(--oz-card);
+            padding: 50px 40px;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--oz-border);
+            box-sizing: border-box;
+            background: linear-gradient(145deg, var(--oz-card) 0%, #152F46 100%);
+        }
+        .login-card h2 {
+            margin-top: 0;
+            color: var(--oz-text-primary);
+            font-weight: 800;
+        }
+        .login-btn {
+            background: white;
+            color: var(--oz-bg);
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 18px;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-sizing: border-box;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25);
+        }
+        .login-btn:active {
+            transform: scale(0.98);
+        }
 
         /* מסך הטרקר */
-        #tracker-screen { display: none; flex-direction: column; align-items: center; width: 100%; padding-bottom: 60px; }
-
-        .wolt-circle { width: 260px; height: 260px; border-radius: 50%; background: conic-gradient(var(--wolt-blue) var(--progress), #eef2f6 0deg); display: flex; align-items: center; justify-content: center; margin-top: 40px; box-shadow: 0 15px 35px rgba(0,194,232,0.15); transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .inner-circle { width: 220px; height: 220px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; box-shadow: inset 0 4px 10px rgba(0,0,0,0.02); }
-        .percentage { font-size: 64px; font-weight: 800; color: var(--wolt-dark); letter-spacing: -2px; }
-        .status-msg { font-size: 14px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: -5px; }
-
-        .card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); width: 90%; max-width: 540px; border-radius: 32px; padding: 35px; margin-top: 40px; box-shadow: 0 12px 40px rgba(0,0,0,0.04); border: 1px solid rgba(255,255,255,0.6); box-sizing: border-box; }
-        .user-welcome { text-align: center; margin-bottom: 20px; color: var(--wolt-dark); font-weight: 800; font-size: 22px; }
-
-        /* כפתור שיתוף בוואטסאפ */
-        .share-btn { background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 14px; cursor: pointer; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto 30px auto; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.25); transition: all 0.2s ease; }
-        .share-btn:hover { background: #1ebc5a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35); }
-        .share-btn:active { transform: scale(0.98); }
-
-        .input-group { display: flex; gap: 12px; margin-bottom: 30px; position: relative; }
-        #task-input { flex-grow: 1; padding: 16px 20px; border: 1px solid #e2e8f0; border-radius: 18px; font-size: 16px; outline: none; background: white; transition: 0.2s; font-family: inherit; }
-        #task-input:focus { border-color: var(--wolt-blue); box-shadow: 0 0 0 3px rgba(0,194,232,0.1); }
-        #add-btn { background: var(--wolt-dark); color: white; border: none; padding: 0 24px; border-radius: 16px; cursor: pointer; font-weight: 700; transition: 0.2s; }
-        #add-btn:hover { background: #0f172a; transform: scale(1.02); }
-
-        .task-item { display: flex; align-items: center; padding: 16px 12px; border-bottom: 1px solid #f1f5f9; animation: slideUp 0.4s ease; transition: background 0.2s; border-radius: 12px; }
-        .task-item:hover { background: white; }
-        .task-item:last-child { border-bottom: none; }
+        #tracker-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding-bottom: 70px;
+            box-sizing: border-box;
+        }
         
-        .task-text { flex-grow: 1; font-size: 16px; color: #334155; line-height: 1.5; font-weight: 500; transition: all 0.3s ease; padding-right: 15px; }
-        .task-text.completed { text-decoration: line-through; color: #94a3b8; }
+        /* Premium Sleek Progress Circle */
+        .wolt-circle {
+            width: 270px;
+            height: 270px;
+            border-radius: 50%;
+            background: conic-gradient(var(--oz-accent) var(--progress), #152F46 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+            box-shadow: 0 20px 50px rgba(0, 242, 255, 0.15);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        /* Outer premium frosted frosted ring */
+        .wolt-circle::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 50%;
+            border: 1px solid var(--oz-border);
+        }
         
-        .checkbox-wrapper { position: relative; width: 24px; height: 24px; margin-left: 10px; cursor: pointer; }
-        .checkbox-wrapper input { opacity: 0; width: 0; height: 0; position: absolute; }
-        .checkmark { position: absolute; top: 0; left: 0; height: 24px; width: 24px; background-color: #f8fafc; border: 2px solid #cbd5e1; border-radius: 50%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
-        .checkbox-wrapper:hover input ~ .checkmark { border-color: var(--wolt-blue); }
-        .checkbox-wrapper input:checked ~ .checkmark { background-color: var(--wolt-blue); border-color: var(--wolt-blue); }
-        .checkmark::after { content: ""; position: absolute; display: none; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-top: -2px; }
-        .checkbox-wrapper input:checked ~ .checkmark::after { display: block; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .inner-circle {
+            width: 230px;
+            height: 230px;
+            background: var(--oz-card);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        .percentage {
+            font-size: 68px;
+            font-weight: 900;
+            color: var(--oz-text-primary);
+            letter-spacing: -2px;
+        }
+        .status-msg {
+            font-size: 15px;
+            color: var(--oz-text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: -5px;
+        }
 
-        .delete-btn { color: #cbd5e1; cursor: pointer; font-size: 13px; font-weight: 600; margin-right: 10px; border: none; background: none; transition: 0.2s; padding: 8px; border-radius: 8px; }
-        .delete-btn:hover { color: #ef4444; background: #fef2f2; }
+        /* Dark Premium Tracker Card */
+        .card {
+            background: var(--oz-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 90%;
+            max-width: 550px;
+            border-radius: 35px;
+            padding: 35px;
+            margin-top: 45px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--oz-border);
+            box-sizing: border-box;
+            position: relative;
+            background: linear-gradient(145deg, var(--oz-card) 0%, #152F46 100%);
+        }
+        /* Add conceptual blurred gradient background behind card */
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: -30px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.05) 0%, rgba(0, 0, 0, 0) 60%);
+            z-index: -1;
+            filter: blur(40px);
+        }
+        
+        .user-welcome {
+            text-align: center;
+            margin-bottom: 35px;
+            color: var(--oz-text-primary);
+            font-weight: 800;
+            font-size: 24px;
+        }
+        
+        /* Frosted Frosted Frosted Input Group */
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #task-input {
+            flex-grow: 1;
+            padding: 18px 24px;
+            border: 1px solid var(--oz-border);
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+            background: rgba(188, 195, 210, 0.05);
+            transition: all 0.2s;
+            font-family: inherit;
+            color: var(--oz-text-primary);
+            box-sizing: border-box;
+        }
+        #task-input:focus {
+            border-color: var(--oz-accent);
+            box-shadow: 0 0 0 3px rgba(0, 242, 255, 0.05);
+            background: rgba(188, 195, 210, 0.08);
+        }
+        #add-btn {
+            background: var(--oz-accent);
+            color: var(--oz-bg);
+            border: none;
+            padding: 0 28px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 16px;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        #add-btn:hover {
+            background: #00E0EC;
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.2);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 15px;
+            border-bottom: 1px solid var(--oz-border);
+            animation: slideUp 0.4s ease;
+            transition: background 0.2s;
+            border-radius: 14px;
+        }
+        .task-item:hover {
+            background: rgba(188, 195, 210, 0.02);
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-text {
+            flex-grow: 1;
+            font-size: 16px;
+            color: var(--oz-text-secondary);
+            line-height: 1.5;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding-right: 18px;
+        }
+        /* Stylized Completed Task as premium/metallic */
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #64748B; /* Dark metallic silver */
+        }
+        
+        /* Advanced Custom Checkbox Design matching provided style */
+        .checkbox-wrapper {
+            position: relative;
+            width: 28px;
+            height: 28px;
+            margin-left: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .checkbox-wrapper input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 28px;
+            width: 28px;
+            background-color: transparent;
+            border: 2px solid var(--oz-border);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .checkbox-wrapper:hover input ~ .checkmark {
+            border-color: var(--oz-accent);
+        }
+        .checkbox-wrapper input:checked ~ .checkmark {
+            background-color: var(--oz-accent);
+            border-color: var(--oz-accent);
+        }
+        .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            width: 6px;
+            height: 12px;
+            border: solid var(--oz-bg); /* Dark V mark */
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg);
+            margin-top: -2.5px;
+        }
+        .checkbox-wrapper input:checked ~ .checkmark::after {
+            display: block;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .delete-btn {
+            color: #fab1a0; /* Minimalist metallic silver */
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 12px;
+            border: none;
+            background: none;
+            transition: all 0.2s;
+            padding: 10px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+        .delete-btn:hover {
+            color: #ef4444; /* Conceptual concept 'danger' metallic */
+            background: rgba(239, 68, 68, 0.05);
+        }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: rotate(45deg) scale(0.5); } 100% { opacity: 1; transform: rotate(45deg) scale(1); } }
+
+        /* התאמות למובייל (Mobile-First concept) */
+        @media (max-width: 550px) {
+            .card { padding: 30px 25px; width: 92%; }
+            .user-welcome { font-size: 20px; }
+            .input-group { flex-direction: column; gap: 15px; }
+            #task-input { width: 100%; }
+            #add-btn { padding: 18px; width: 100%; }
+            .wolt-circle { width: 230px; height: 230px; margin-top: 40px; }
+            .inner-circle { width: 190px; height: 190px; }
+            .percentage { font-size: 60px; }
+            .task-text { font-size: 15px; }
+            .login-card { padding: 40px 30px; }
+            .brand-block { gap: 10px; }
+            .brand-name { font-size: 18px; }
+            .onezero-block { padding: 6px 10px; }
+            .oz-one-text, .oz-zero-text { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="brand-header">
-        <span class="brand-name">
-            <span class="brand-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-            </span>
-            AI-Simple Progress
-        </span>
+        <div class="brand-block">
+            <div class="onezero-block">
+                <span class="oz-one-text">ONE</span>
+                <span class="oz-zero-text">ZERO</span>
+            </div>
+            <span class="brand-name">AI-Simple Progress</span>
+        </div>
         <button id="logout-btn" class="logout-btn">התנתק</button>
     </div>
 
     <div id="login-screen">
         <div class="login-card">
             <h2>איזה כיף שבאת! 👋</h2>
-            <p style="color:#64748b; margin-bottom:30px;">התחבר כדי לנהל את הפרויקט שלך</p>
+            <p style="color:var(--oz-text-secondary); margin-bottom:35px;">התחבר כדי לנהל את ההתקדמות שלך</p>
             <button id="login-go" class="login-btn">
                 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
                 התחברות מהירה עם Google
@@ -101,14 +478,8 @@
 
         <div class="card">
             <div id="user-display" class="user-welcome"></div>
-            
-            <button id="share-whatsapp-btn" class="share-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51h-.57c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                שתף התקדמות
-            </button>
-
             <div class="input-group">
-                <input type="text" id="task-input" placeholder="להוסיף משימה לפרויקט?">
+                <input type="text" id="task-input" placeholder="להוסיף משימה אישית?">
                 <button id="add-btn">הוספה</button>
             </div>
             <div id="tasks-container">טוען את תוכנית העבודה שלך...</div>
@@ -120,6 +491,8 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+        // הגדרות פיירבייס - המפתחות שלך מוטמעים כאן
+        // וודא שהמפתח תוקן עם F גדולה كما طلب سابقاً: AIzaSyCmCbbVEjfdycdC5DFluQ0o4jQFrBwznFM
         const firebaseConfig = {
           apiKey: "AIzaSyCmCbbVEjfdycdC5DFluQ0o4jQFrBwznFM",
           authDomain: "myworkshoptracker-90006.firebaseapp.com",
@@ -143,59 +516,63 @@
         const loginBtn = document.getElementById('login-go');
         const logoutBtn = document.getElementById('logout-btn');
         const userDisplay = document.getElementById('user-display');
-        const shareBtn = document.getElementById('share-whatsapp-btn');
 
+        // לחיצה על כפתור התחברות
         loginBtn.onclick = () => {
             signInWithPopup(auth, provider).catch(err => {
                 console.error("שגיאת התחברות:", err);
+                // הודעה ידידותית למשתמש
                 alert("הייתה בעיה בהתחברות, נסה שוב.");
             });
         };
 
-        logoutBtn.onclick = () => signOut(auth);
-
-        // הפעלת כפתור השיתוף עם הטקסט השיווקי החדש
-        shareBtn.onclick = () => {
-            const currentPercent = document.getElementById('perc-text').innerText;
-            const myUrl = window.location.origin + window.location.pathname;
-            const message = `אני כבר ב-${currentPercent} מהפרויקט שלי! מנהל אותו בקלות עם הכלי של 'AI זה פשוט' 🎯\nמוזמנים לנסות גם בחינם:\n${myUrl}`;
-            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+        // לחיצה על התנתקות
+        logoutBtn.onclick = () => {
+            signOut(auth).catch(err => {
+                console.error("שגיאת התנתקות:", err);
+            });
         };
 
+        // האזנה למצב המשתמש - מחובר או מנותק
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUid = user.uid; 
                 loginScreen.style.display = 'none';
                 trackerScreen.style.display = 'flex';
                 logoutBtn.style.display = 'block';
-                userDisplay.innerText = `ההתקדמות של ${user.displayName.split(' ')[0]}`;
+                // decode components are not needed anymore as we don't use URL parameters
+                userDisplay.innerText = `ההתקדמות של ${user.displayName.split(' ')[0]}`; // מציג שם פרטי מהחשבון
                 
-                window.history.replaceState({}, document.title, window.location.pathname);
+                // מנקה את שורת הכתובת אם נשאר בה פרמטר ישן מהגרסה הקודמת
+                if (window.location.search.includes('?u=')) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+                
                 initTracker(currentUid);
             } else {
                 currentUid = null;
                 loginScreen.style.display = 'flex';
                 trackerScreen.style.display = 'none';
                 logoutBtn.style.display = 'none';
-                if (unsubscribeSnapshot) unsubscribeSnapshot();
+                // אם היינו רשומים, נבטל את הרישום
+                if (unsubscribeSnapshot) {
+                    unsubscribeSnapshot();
+                    unsubscribeSnapshot = null;
+                }
             }
         });
 
         function initTracker(uid) {
             const defaultTasks = [
-                "הגדרת מטרות ויעדים לפרויקט", 
-                "חלוקת הפרויקט לשלבים מרכזיים", 
-                "יצירת לוח זמנים מפורט",
-                "איסוף חומרים ומשאבים", 
-                "ביצוע משימת הליבה הראשונה", 
-                "בדיקת התקדמות וביצוע התאמות",
-                "השלמת שלבי הפיתוח והעשייה", 
-                "בקרת איכות ופינישים אחרונים", 
-                "השקה ושחרור לאוויר"
+                "הגדרת קהל יעד (בעזרת ChatGPT)", "בחירת שם וקניית דומיין", "מיתוג ולוגו (בעזרת Canva AI)",
+                "כתיבת תוכן לדף נחיתה", "בניית דף הנחיתה באוויר", "חיבור סליקה",
+                "אוטומציית מייל/וואטסאפ ברוך הבא", "חיבור הלידים ל-CRM (גוגל שיטס)",
+                "יצירת תוכנית תוכן ל-30 יום", "צילום והעלאת 3 סרטוני רילס", "וובינר או סדנת השקה"
             ];
 
+            // יצירת משתמש חדש עם משימות ברירת מחדל אם הוא מחובר
             async function checkNew() {
+                if (!uid) return;
                 const qCheck = query(tasksCol, where("userId", "==", uid));
                 const snap = await getDocs(qCheck);
                 if (snap.empty) {
@@ -210,16 +587,18 @@
                 }
             }
 
-            if (unsubscribeSnapshot) unsubscribeSnapshot();
+            // האזנה לשינויים בזמן אמת עבור המשתמש המחובר
+            if (unsubscribeSnapshot) unsubscribeSnapshot(); // ביטול רישום קודם אם קיים
             unsubscribeSnapshot = onSnapshot(query(tasksCol, where("userId", "==", uid), orderBy("createdAt", "asc")), (snapshot) => {
                 let tasks = [];
                 snapshot.forEach(doc => tasks.push({ id: doc.id, ...doc.data() }));
                 render(tasks);
             });
 
+            // הוספת משימה אישית
             const addTask = async () => {
                 const input = document.getElementById('task-input');
-                if (input.value.trim()) {
+                if (input.value.trim() && uid) {
                     await addDoc(tasksCol, { text: input.value, done: false, createdAt: Date.now(), userId: uid });
                     input.value = "";
                 }
@@ -228,7 +607,7 @@
             document.getElementById('task-input').onkeypress = (e) => { if(e.key === 'Enter') addTask(); };
 
             window.toggleTask = async (id, status) => { await updateDoc(doc(db, "tasks", id), { done: !status }); };
-            window.deleteTask = async (id) => { if(confirm("למחוק משימה זו מהפרויקט?")) await deleteDoc(doc(db, "tasks", id)); };
+            window.deleteTask = async (id) => { if(confirm("למחוק משימה זו מהמסלול?")) await deleteDoc(doc(db, "tasks", id)); };
 
             let lastPercent = -1;
             function render(tasks) {
@@ -240,6 +619,7 @@
                     const div = document.createElement('div');
                     div.className = 'task-item';
                     
+                    // מבנה צ'קבוקס חדש ומעوצב בהשראת One Zero
                     div.innerHTML = `
                         <label class="checkbox-wrapper">
                             <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask('${t.id}', ${t.done})">
@@ -256,20 +636,24 @@
                 document.getElementById('main-circle').style.setProperty('--progress', (percent * 3.6) + 'deg');
                 
                 const label = document.getElementById('status-label');
-                
                 if(percent === 0) label.innerText = "יוצאים לדרך! 🚀";
-                else if(percent <= 25) label.innerText = "התחלה מעולה! 💪";
-                else if(percent <= 50) label.innerText = "נכנסים לקצב! 🏃‍♂️";
-                else if(percent <= 75) label.innerText = "עברנו את החצי! 🎯";
-                else if(percent <= 99) label.innerText = "כמעט שם... 🔥";
+                else if(percent < 50) label.innerText = "התחלה מעולה! ✨";
+                else if(percent < 100) label.innerText = "כמעט שם... 🔥";
                 else {
-                    label.innerText = "עשית את זה! 🎉";
+                    label.innerText = "העסק באוויר! 🎉";
+                    // הפעלת קונפטי רק כשהגענו ל-100% בפעם הראשונה ברינדור
                     if(lastPercent !== -1 && lastPercent < 100) {
-                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#00c2e8', '#1e293b', '#ffffff'] });
+                        confetti({ 
+                            particleCount: 150, 
+                            spread: 70, 
+                            origin: { y: 0.6 },
+                            colors: ['#00F2FF', '#FFFFFF', '#BCC3D2', '#1E293B'] // צבעי המותג
+                        });
                     }
                 }
                 lastPercent = percent;
             }
+            // בדיקת משתמש חדש
             checkNew();
         }
     </script>
