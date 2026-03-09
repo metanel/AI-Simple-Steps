@@ -7,18 +7,19 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            var(--app-bg): #F4F5F7;
-            --app-card: #FFFFFF;
-            --app-text-main: #111418;
-            --app-text-muted: #6B7280;
-            --app-accent: #111418;
-            --app-border: #E5E7EB;
+            /* Premium Light Palette (One Zero Inspired) */
+            --app-bg: #F4F5F7; /* Soft light gray background */
+            --app-card: #FFFFFF; /* Pure white cards */
+            --app-text-main: #111418; /* Near black for sharp typography */
+            --app-text-muted: #6B7280; /* Elegant gray for secondary text */
+            --app-accent: #111418; /* Dark/Black for primary actions */
+            --app-border: #E5E7EB; /* Very subtle borders */
             --app-input-bg: #F9FAFB;
         }
         
         body {
             font-family: 'Assistant', 'Segoe UI', system-ui, sans-serif;
-            background: #F4F5F7;
+            background: var(--app-bg);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -30,7 +31,7 @@
             -webkit-font-smoothing: antialiased;
         }
         
-        /* Header */
+        /* Header - Clean & Minimal */
         .brand-header {
             width: 100%;
             background: rgba(255, 255, 255, 0.9);
@@ -46,6 +47,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.03);
             box-sizing: border-box;
         }
+        
         .brand-name {
             font-size: 20px;
             font-weight: 800;
@@ -55,180 +57,326 @@
             gap: 10px;
             letter-spacing: -0.3px;
         }
-        .brand-icon { display: flex; align-items: center; justify-content: center; color: var(--app-text-main); }
+
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--app-text-main);
+        }
+
         .logout-btn {
-            position: absolute; left: 24px; background: var(--app-input-bg);
-            border: 1px solid var(--app-border); color: var(--app-text-muted);
-            border-radius: 20px; padding: 8px 16px; cursor: pointer;
-            font-size: 13px; font-weight: 700; transition: all 0.2s; display: none;
-        }
-        .logout-btn:hover { background: #E5E7EB; color: var(--app-text-main); }
-
-        /* Login Screen */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85vh; padding: 24px; width: 100%; box-sizing: border-box; }
-        .login-card { background: var(--app-card); padding: 48px 40px; border-radius: 32px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); width: 100%; max-width: 420px; text-align: center; box-sizing: border-box; }
-        .login-card h2 { margin-top: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
-        .login-btn {
-            background: var(--app-card); color: var(--app-text-main); border: 1px solid var(--app-border);
-            width: 100%; padding: 18px; border-radius: 24px; cursor: pointer; font-weight: 700; font-size: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02); transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 12px; box-sizing: border-box; margin-top: 10px;
-        }
-        .login-btn:hover { background: var(--app-input-bg); border-color: #D1D5DB; transform: translateY(-2px); }
-
-        /* Tracker Screen */
-        #tracker-screen { display: none; flex-direction: column; align-items: center; width: 100%; padding-bottom: 80px; box-sizing: border-box; }
-        
-        .wolt-circle {
-            width: 240px; height: 240px; border-radius: 50%;
-            background: conic-gradient(var(--app-accent) var(--progress), #E5E7EB 0deg);
-            display: flex; align-items: center; justify-content: center; margin-top: 40px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06); transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .inner-circle { width: 210px; height: 210px; background: var(--app-card); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02); }
-        .percentage { font-size: 56px; font-weight: 800; color: var(--app-text-main); letter-spacing: -1.5px; line-height: 1; }
-        .status-msg { font-size: 14px; color: var(--app-text-muted); font-weight: 700; margin-top: 8px; }
-
-        .card { background: var(--app-card); width: 92%; max-width: 560px; border-radius: 32px; padding: 32px; margin-top: 40px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04); box-sizing: border-box; }
-        .user-welcome { text-align: center; margin-bottom: 24px; color: var(--app-text-main); font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
-        
-        .share-btn {
-            background: #25D366; color: white; border: none; padding: 12px 24px; border-radius: 24px;
-            cursor: pointer; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center;
-            gap: 8px; margin: 0 auto 32px auto; transition: all 0.2s ease; width: fit-content;
-        }
-        .share-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 211, 102, 0.2); }
-        
-        .input-group { display: flex; gap: 12px; margin-bottom: 24px; width: 100%; box-sizing: border-box; }
-        #task-input { flex-grow: 1; padding: 18px 24px; border: none; border-radius: 20px; font-size: 16px; outline: none; background: var(--app-input-bg); transition: all 0.2s; font-family: inherit; color: var(--app-text-main); box-sizing: border-box; }
-        #task-input:focus { background: #F3F4F6; box-shadow: inset 0 0 0 2px var(--app-text-main); }
-        #add-btn { background: var(--app-accent); color: white; border: none; padding: 0 28px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 16px; transition: all 0.2s; box-sizing: border-box; }
-        #add-btn:hover { background: #374151; transform: scale(1.02); }
-
-        /* עיצוב המשימות והאקורדיון החדש */
-        .task-wrapper {
-            border-bottom: 1px solid var(--app-border);
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            margin-bottom: 8px;
-            overflow: hidden;
-            background: var(--app-card);
-        }
-        .task-wrapper:hover {
+            position: absolute;
+            left: 24px;
             background: var(--app-input-bg);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid var(--app-border);
+            color: var(--app-text-muted);
+            border-radius: 20px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: none;
         }
-        .task-wrapper:last-child { margin-bottom: 0; border-bottom: none; }
+        .logout-btn:hover {
+            background: #E5E7EB;
+            color: var(--app-text-main);
+        }
+
+        /* מסך כניסה */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 85vh;
+            padding: 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .login-card {
+            background: var(--app-card);
+            padding: 48px 40px;
+            border-radius: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .login-card h2 {
+            margin-top: 0;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+        .login-btn {
+            background: var(--app-card);
+            color: var(--app-text-main);
+            border: 1px solid var(--app-border);
+            width: 100%;
+            padding: 18px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            background: var(--app-input-bg);
+            border-color: #D1D5DB;
+            transform: translateY(-2px);
+        }
+
+        /* מסך הטרקר */
+        #tracker-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding-bottom: 80px;
+            box-sizing: border-box;
+        }
         
-        .task-main-row {
+        /* מד התקדמות אלגנטי וקונטרסטי */
+        .wolt-circle {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: conic-gradient(var(--app-accent) var(--progress), #E5E7EB 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .inner-circle {
+            width: 210px;
+            height: 210px;
+            background: var(--app-card);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+        .percentage {
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--app-text-main);
+            letter-spacing: -1.5px;
+            line-height: 1;
+        }
+        .status-msg {
+            font-size: 14px;
+            color: var(--app-text-muted);
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        /* כרטיסיית המשימות */
+        .card {
+            background: var(--app-card);
+            width: 92%;
+            max-width: 560px;
+            border-radius: 32px;
+            padding: 32px;
+            margin-top: 40px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+            box-sizing: border-box;
+        }
+        .user-welcome {
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--app-text-main);
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+        
+        /* כפתור שיתוף בוואטסאפ (מעודן ומשתלב) */
+        .share-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto 32px auto;
+            transition: all 0.2s ease;
+            width: fit-content;
+        }
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.2);
+        }
+        
+        /* שדה הזנה וכפתור */
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #task-input {
+            flex-grow: 1;
+            padding: 18px 24px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+            background: var(--app-input-bg);
+            transition: all 0.2s;
+            font-family: inherit;
+            color: var(--app-text-main);
+            box-sizing: border-box;
+        }
+        #task-input:focus {
+            background: #F3F4F6;
+            box-shadow: inset 0 0 0 2px var(--app-text-main);
+        }
+        #add-btn {
+            background: var(--app-accent);
+            color: white;
+            border: none;
+            padding: 0 28px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        #add-btn:hover {
+            background: #374151;
+            transform: scale(1.02);
+        }
+
+        /* משימות */
+        .task-item {
             display: flex;
             align-items: center;
             padding: 20px 16px;
-            cursor: pointer;
-            user-select: none;
+            border-bottom: 1px solid var(--app-border);
+            animation: slideUp 0.4s ease;
+            transition: background 0.2s;
+            border-radius: 16px;
+        }
+        .task-item:hover {
+            background: var(--app-input-bg);
+        }
+        .task-item:last-child {
+            border-bottom: none;
         }
         
         .task-text {
             flex-grow: 1;
-            font-size: 18px; /* פונט גדול יותר למשימה ראשית */
+            font-size: 16px;
             color: var(--app-text-main);
             line-height: 1.4;
-            font-weight: 700;
+            font-weight: 600;
             transition: all 0.3s ease;
             padding-right: 16px;
         }
-        .task-text.completed { text-decoration: line-through; color: #9CA3AF; font-weight: 500; }
-        
-        .chevron {
+        .task-text.completed {
+            text-decoration: line-through;
             color: #9CA3AF;
-            transition: transform 0.3s ease;
-            margin-left: 8px;
+            font-weight: 500;
+        }
+        
+        /* צ'קבוקס מינימליסטי ויוקרתי */
+        .checkbox-wrapper {
+            position: relative;
+            width: 26px;
+            height: 26px;
+            margin-left: 12px;
+            cursor: pointer;
             flex-shrink: 0;
         }
-        .task-wrapper.open .chevron { transform: rotate(180deg); }
-
-        /* צ'קבוקס ראשי (עגול) */
-        .checkbox-wrapper { position: relative; width: 26px; height: 26px; margin-left: 12px; cursor: pointer; flex-shrink: 0; }
-        .checkbox-wrapper input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .checkbox-wrapper input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
         .checkmark {
-            position: absolute; top: 0; left: 0; height: 26px; width: 26px; background-color: transparent;
-            border: 2px solid #D1D5DB; border-radius: 50%; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; box-sizing: border-box;
-        }
-        .checkbox-wrapper:hover input ~ .checkmark { border-color: var(--app-text-main); }
-        .checkbox-wrapper input:checked ~ .checkmark { background-color: var(--app-text-main); border-color: var(--app-text-main); }
-        .checkmark::after { content: ""; position: absolute; display: none; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-top: -2px; }
-        .checkbox-wrapper input:checked ~ .checkmark::after { display: block; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-
-        /* אזור תתי המשימות (אקורדיון) */
-        .accordion-content {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .task-wrapper.open .accordion-content {
-            grid-template-rows: 1fr;
-        }
-        .accordion-inner {
-            overflow: hidden;
-            background: #FAFAFA;
-            border-top: 1px solid rgba(0,0,0,0.02);
-        }
-        
-        .subtasks-list {
-            padding: 10px 45px 10px 16px; /* ריווח פנימי שדוחף את התת-משימה פנימה */
-        }
-        
-        .subtask-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 26px;
+            width: 26px;
+            background-color: transparent;
+            border: 2px solid #D1D5DB;
+            border-radius: 50%;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px dashed #E5E7EB;
+            justify-content: center;
+            box-sizing: border-box;
         }
-        .subtask-item:last-child { border-bottom: none; }
-        
-        .subtask-text {
-            flex-grow: 1;
-            font-size: 15px; /* פונט קטן יותר */
-            color: var(--app-text-muted); /* אפור עדין */
-            font-weight: 500;
-            padding-right: 12px;
+        .checkbox-wrapper:hover input ~ .checkmark {
+            border-color: var(--app-text-main);
+        }
+        .checkbox-wrapper input:checked ~ .checkmark {
+            background-color: var(--app-text-main);
+            border-color: var(--app-text-main);
+        }
+        .checkmark::after {
+            content: "";
+            position: absolute;
+            display: none;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-top: -2px;
+        }
+        .checkbox-wrapper input:checked ~ .checkmark::after {
+            display: block;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .delete-btn {
+            color: #D1D5DB;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            margin-right: 8px;
+            border: none;
+            background: none;
             transition: all 0.2s;
+            padding: 8px 12px;
+            border-radius: 16px;
+            flex-shrink: 0;
         }
-        .subtask-text.completed { text-decoration: line-through; color: #D1D5DB; }
-
-        /* צ'קבוקס משני (ריבוע מעוגל) */
-        .sub-checkbox { width: 20px; height: 20px; margin-left: 8px; }
-        .sub-checkbox .checkmark {
-            height: 20px; width: 20px;
-            border-radius: 6px; /* ריבוע מעוגל */
-            border-color: #CBD5E1;
+        .delete-btn:hover {
+            color: #EF4444;
+            background: #FEE2E2;
         }
-        .sub-checkbox input:checked ~ .checkmark { background-color: var(--app-text-muted); border-color: var(--app-text-muted); }
-        .sub-checkbox .checkmark::after { width: 4px; height: 8px; margin-top: -1px; }
-
-        /* שדה הוספת תת-משימה */
-        .subtask-add-row {
-            display: flex;
-            padding: 0 45px 20px 16px;
-            gap: 10px;
-        }
-        .subtask-input {
-            flex-grow: 1; padding: 10px 16px; border: 1px solid var(--app-border); border-radius: 12px;
-            font-size: 14px; background: white; outline: none; font-family: inherit; color: var(--app-text-main);
-        }
-        .subtask-input:focus { border-color: var(--app-text-muted); }
-        .subtask-add-btn {
-            background: var(--app-text-muted); color: white; border: none; padding: 0 16px;
-            border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s;
-        }
-        .subtask-add-btn:hover { background: var(--app-text-main); }
-
-        .delete-btn { color: #D1D5DB; cursor: pointer; font-size: 13px; font-weight: 700; margin-right: 8px; border: none; background: none; transition: all 0.2s; padding: 8px 12px; border-radius: 16px; flex-shrink: 0; }
-        .delete-btn:hover { color: #EF4444; background: #FEE2E2; }
-        .sub-delete-btn { padding: 4px 8px; font-size: 12px; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: rotate(45deg) scale(0.5); } 100% { opacity: 1; transform: rotate(45deg) scale(1); } }
 
+        /* התאמות למובייל - UX מושלם ללא גלילה אופקית */
         @media (max-width: 600px) {
             .card { padding: 24px; width: 92%; border-radius: 28px; }
             .user-welcome { font-size: 20px; }
@@ -238,8 +386,7 @@
             .wolt-circle { width: 200px; height: 200px; margin-top: 32px; }
             .inner-circle { width: 176px; height: 176px; }
             .percentage { font-size: 48px; }
-            .task-text { font-size: 16px; }
-            .subtask-text { font-size: 14px; }
+            .task-text { font-size: 15px; }
             .login-card { padding: 40px 24px; width: 92%; }
             .share-btn { width: 100%; }
         }
@@ -285,7 +432,7 @@
             </button>
 
             <div class="input-group">
-                <input type="text" id="task-input" placeholder="להוסיף משימה ראשית?">
+                <input type="text" id="task-input" placeholder="להוסיף משימה לפרויקט?">
                 <button id="add-btn">הוספה</button>
             </div>
             <div id="tasks-container">טוען את תוכנית העבודה שלך...</div>
@@ -314,42 +461,61 @@
 
         let currentUid = null;
         let unsubscribeSnapshot = null;
-        window.currentTasksList = []; // שמירת המשימות בזיכרון הראשי
 
         const loginScreen = document.getElementById('login-screen');
         const trackerScreen = document.getElementById('tracker-screen');
+        const loginBtn = document.getElementById('login-go');
         const logoutBtn = document.getElementById('logout-btn');
         const userDisplay = document.getElementById('user-display');
+        const shareBtn = document.getElementById('share-whatsapp-btn');
 
-        document.getElementById('login-go').onclick = () => signInWithPopup(auth, provider).catch(err => alert("הייתה בעיה בהתחברות."));
+        loginBtn.onclick = () => {
+            signInWithPopup(auth, provider).catch(err => {
+                console.error("שגיאת התחברות:", err);
+                alert("הייתה בעיה בהתחברות, נסה שוב.");
+            });
+        };
+
         logoutBtn.onclick = () => signOut(auth);
-        
-        document.getElementById('share-whatsapp-btn').onclick = () => {
+
+        shareBtn.onclick = () => {
             const currentPercent = document.getElementById('perc-text').innerText;
             const myUrl = window.location.origin + window.location.pathname;
             const message = `אני כבר ב-${currentPercent} מהפרויקט שלי! מנהל אותו בקלות עם הכלי של 'AI זה פשוט' 🎯\nמוזמנים לנסות גם בחינם:\n${myUrl}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
         };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUid = user.uid; 
-                loginScreen.style.display = 'none'; trackerScreen.style.display = 'flex'; logoutBtn.style.display = 'block';
+                loginScreen.style.display = 'none';
+                trackerScreen.style.display = 'flex';
+                logoutBtn.style.display = 'block';
                 userDisplay.innerText = `ההתקדמות של ${user.displayName.split(' ')[0]}`;
+                
                 window.history.replaceState({}, document.title, window.location.pathname);
                 initTracker(currentUid);
             } else {
                 currentUid = null;
-                loginScreen.style.display = 'flex'; trackerScreen.style.display = 'none'; logoutBtn.style.display = 'none';
+                loginScreen.style.display = 'flex';
+                trackerScreen.style.display = 'none';
+                logoutBtn.style.display = 'none';
                 if (unsubscribeSnapshot) unsubscribeSnapshot();
             }
         });
 
         function initTracker(uid) {
             const defaultTasks = [
-                "הגדרת מטרות ויעדים לפרויקט", "חלוקת הפרויקט לשלבים מרכזיים", "יצירת לוח זמנים מפורט",
-                "איסוף חומרים ומשאבים", "ביצוע משימת הליבה הראשונה", "בדיקת התקדמות וביצוע התאמות",
-                "השלמת שלבי הפיתוח והעשייה", "בקרת איכות ופינישים אחרונים", "השקה ושחרור לאוויר"
+                "הגדרת מטרות ויעדים לפרויקט", 
+                "חלוקת הפרויקט לשלבים מרכזיים", 
+                "יצירת לוח זמנים מפורט",
+                "איסוף חומרים ומשאבים", 
+                "ביצוע משימת הליבה הראשונה", 
+                "בדיקת התקדמות וביצוע התאמות",
+                "השלמת שלבי הפיתוח והעשייה", 
+                "בקרת איכות ופינישים אחרונים", 
+                "השקה ושחרור לאוויר"
             ];
 
             async function checkNew() {
@@ -357,135 +523,63 @@
                 const snap = await getDocs(qCheck);
                 if (snap.empty) {
                     for (let i = 0; i < defaultTasks.length; i++) {
-                        await addDoc(tasksCol, { text: defaultTasks[i], done: false, subtasks: [], createdAt: Date.now() - (i*1000), userId: uid });
+                        await addDoc(tasksCol, { 
+                            text: defaultTasks[i], 
+                            done: false, 
+                            createdAt: Date.now() - (i*1000), 
+                            userId: uid 
+                        });
                     }
                 }
             }
 
             if (unsubscribeSnapshot) unsubscribeSnapshot();
             unsubscribeSnapshot = onSnapshot(query(tasksCol, where("userId", "==", uid), orderBy("createdAt", "asc")), (snapshot) => {
-                window.currentTasksList = [];
-                snapshot.forEach(doc => window.currentTasksList.push({ id: doc.id, ...doc.data() }));
-                render(window.currentTasksList);
+                let tasks = [];
+                snapshot.forEach(doc => tasks.push({ id: doc.id, ...doc.data() }));
+                render(tasks);
             });
 
             const addTask = async () => {
                 const input = document.getElementById('task-input');
                 if (input.value.trim()) {
-                    await addDoc(tasksCol, { text: input.value, done: false, subtasks: [], createdAt: Date.now(), userId: uid });
+                    await addDoc(tasksCol, { text: input.value, done: false, createdAt: Date.now(), userId: uid });
                     input.value = "";
                 }
             };
             document.getElementById('add-btn').onclick = addTask;
             document.getElementById('task-input').onkeypress = (e) => { if(e.key === 'Enter') addTask(); };
 
-            // לוגיקת צ'קבוקס משימה ראשית (מסמן/מבטל הכל)
-            window.toggleMainTask = async (id, currentStatus) => {
-                const newStatus = !currentStatus;
-                const task = window.currentTasksList.find(t => t.id === id);
-                const updatedSubtasks = (task.subtasks || []).map(st => ({...st, done: newStatus}));
-                await updateDoc(doc(db, "tasks", id), { done: newStatus, subtasks: updatedSubtasks });
-            };
-
-            // לוגיקת צ'קבוקס תת-משימה
-            window.toggleSubtask = async (taskId, subtaskId, currentStatus) => {
-                const task = window.currentTasksList.find(t => t.id === taskId);
-                const updatedSubtasks = task.subtasks.map(st => st.id === subtaskId ? { ...st, done: !currentStatus } : st);
-                const allDone = updatedSubtasks.every(st => st.done); // אם כולם מסומנים - הראשי הופך למסומן
-                await updateDoc(doc(db, "tasks", taskId), { subtasks: updatedSubtasks, done: allDone });
-            };
-
-            // הוספת תת-משימה חדשה
-            window.addSubtask = async (taskId) => {
-                const input = document.getElementById(`sub-input-${taskId}`);
-                if(!input.value.trim()) return;
-                const task = window.currentTasksList.find(t => t.id === taskId);
-                const newSubtask = { id: Date.now().toString(), text: input.value, done: false };
-                const updatedSubtasks = [...(task.subtasks || []), newSubtask];
-                // ברגע שהוספנו משימה חדשה שטרם בוצעה, המשימה הראשית כבר לא יכולה להיות 100% מסומנת
-                await updateDoc(doc(db, "tasks", taskId), { subtasks: updatedSubtasks, done: false });
-                input.value = "";
-            };
-
-            // מחיקת תת-משימה
-            window.deleteSubtask = async (taskId, subtaskId) => {
-                const task = window.currentTasksList.find(t => t.id === taskId);
-                const updatedSubtasks = task.subtasks.filter(st => st.id !== subtaskId);
-                const allDone = updatedSubtasks.length > 0 ? updatedSubtasks.every(st => st.done) : task.done;
-                await updateDoc(doc(db, "tasks", taskId), { subtasks: updatedSubtasks, done: allDone });
-            };
-
-            window.deleteTask = async (id) => { if(confirm("למחוק משימה זו ואת כל תתי-המשימות שבה?")) await deleteDoc(doc(db, "tasks", id)); };
-
-            window.toggleAccordion = (id) => { document.getElementById(`wrapper-${id}`).classList.toggle('open'); };
+            window.toggleTask = async (id, status) => { await updateDoc(doc(db, "tasks", id), { done: !status }); };
+            window.deleteTask = async (id) => { if(confirm("למחוק משימה זו מהפרויקט?")) await deleteDoc(doc(db, "tasks", id)); };
 
             let lastPercent = -1;
             function render(tasks) {
                 const container = document.getElementById('tasks-container');
-                
-                // שומר על אקורדיונים שהיו פתוחים לפני הרינדור מחדש
-                const openAccordions = Array.from(document.querySelectorAll('.task-wrapper.open')).map(el => el.id.replace('wrapper-', ''));
-                
                 container.innerHTML = '';
-                
-                let totalWeight = tasks.length;
-                let achievedWeight = 0;
-
+                let done = 0;
                 tasks.forEach(t => {
-                    // חישוב המשקל של המשימה הספציפית למד האחוזים
-                    const subtasks = t.subtasks || [];
-                    if (subtasks.length === 0) {
-                        if (t.done) achievedWeight += 1;
-                    } else {
-                        const completedSubs = subtasks.filter(st => st.done).length;
-                        achievedWeight += (completedSubs / subtasks.length);
-                    }
-
-                    const wrapper = document.createElement('div');
-                    wrapper.className = `task-wrapper ${openAccordions.includes(t.id) ? 'open' : ''}`;
-                    wrapper.id = `wrapper-${t.id}`;
+                    if(t.done) done++;
+                    const div = document.createElement('div');
+                    div.className = 'task-item';
                     
-                    let subtasksHTML = subtasks.map(st => `
-                        <div class="subtask-item">
-                            <label class="checkbox-wrapper sub-checkbox" onclick="event.stopPropagation()">
-                                <input type="checkbox" ${st.done ? 'checked' : ''} onchange="toggleSubtask('${t.id}', '${st.id}', ${st.done})">
-                                <span class="checkmark"></span>
-                            </label>
-                            <span class="subtask-text ${st.done ? 'completed' : ''}">${st.text}</span>
-                            <button class="delete-btn sub-delete-btn" onclick="event.stopPropagation(); deleteSubtask('${t.id}', '${st.id}')">מחק</button>
-                        </div>
-                    `).join('');
-
-                    wrapper.innerHTML = `
-                        <div class="task-main-row" onclick="toggleAccordion('${t.id}')">
-                            <label class="checkbox-wrapper" onclick="event.stopPropagation()">
-                                <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleMainTask('${t.id}', ${t.done})">
-                                <span class="checkmark"></span>
-                            </label>
-                            <span class="task-text ${t.done ? 'completed' : ''}">${t.text}</span>
-                            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                            <button class="delete-btn" onclick="event.stopPropagation(); deleteTask('${t.id}')">מחק</button>
-                        </div>
-                        <div class="accordion-content">
-                            <div class="accordion-inner">
-                                <div class="subtasks-list">
-                                    ${subtasksHTML}
-                                </div>
-                                <div class="subtask-add-row" onclick="event.stopPropagation()">
-                                    <input type="text" id="sub-input-${t.id}" class="subtask-input" placeholder="הוסף תת-משימה..." onkeypress="if(event.key === 'Enter') addSubtask('${t.id}')">
-                                    <button class="subtask-add-btn" onclick="addSubtask('${t.id}')">הוסף</button>
-                                </div>
-                            </div>
-                        </div>
+                    div.innerHTML = `
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask('${t.id}', ${t.done})">
+                            <span class="checkmark"></span>
+                        </label>
+                        <span class="task-text ${t.done ? 'completed' : ''}">${t.text}</span>
+                        <button class="delete-btn" onclick="deleteTask('${t.id}')">מחק</button>
                     `;
-                    container.appendChild(wrapper);
+                    container.appendChild(div);
                 });
 
-                const percent = totalWeight === 0 ? 0 : Math.round((achievedWeight / totalWeight) * 100);
+                const percent = tasks.length ? Math.round((done/tasks.length)*100) : 0;
                 document.getElementById('perc-text').innerText = percent + '%';
                 document.getElementById('main-circle').style.setProperty('--progress', (percent * 3.6) + 'deg');
                 
                 const label = document.getElementById('status-label');
+                
                 if(percent === 0) label.innerText = "יוצאים לדרך! 🚀";
                 else if(percent <= 25) label.innerText = "התחלה מעולה! 💪";
                 else if(percent <= 50) label.innerText = "נכנסים לקצב! 🏃‍♂️";
@@ -493,7 +587,9 @@
                 else if(percent <= 99) label.innerText = "כמעט שם... 🔥";
                 else {
                     label.innerText = "עשית את זה! 🎉";
-                    if(lastPercent !== -1 && lastPercent < 100) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#111418', '#6B7280', '#D1D5DB'] });
+                    if(lastPercent !== -1 && lastPercent < 100) {
+                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#111418', '#6B7280', '#D1D5DB'] });
+                    }
                 }
                 lastPercent = percent;
             }
