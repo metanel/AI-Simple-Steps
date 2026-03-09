@@ -205,7 +205,7 @@
             letter-spacing: -0.5px;
         }
         
-        /* כפתור שיתוף בוואטסאפ (מעודן ומשתלב) */
+        /* כפתור שיתוף בוואטסאפ */
         .share-btn {
             background: #25D366;
             color: white;
@@ -373,10 +373,18 @@
             background: #FEE2E2;
         }
 
+        .empty-state {
+            text-align: center;
+            color: var(--app-text-muted);
+            padding: 32px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: rotate(45deg) scale(0.5); } 100% { opacity: 1; transform: rotate(45deg) scale(1); } }
 
-        /* התאמות למובייל - UX מושלם ללא גלילה אופקית */
+        /* התאמות למובייל */
         @media (max-width: 600px) {
             .card { padding: 24px; width: 92%; border-radius: 28px; }
             .user-welcome { font-size: 20px; }
@@ -441,7 +449,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -506,58 +514,61 @@
         });
 
         function initTracker(uid) {
-            const defaultTasks = [
-                "הגדרת מטרות ויעדים לפרויקט", 
-                "חלוקת הפרויקט לשלבים מרכזיים", 
-                "יצירת לוח זמנים מפורט",
-                "איסוף חומרים ומשאבים", 
-                "ביצוע משימת הליבה הראשונה", 
-                "בדיקת התקדמות וביצוע התאמות",
-                "השלמת שלבי הפיתוח והעשייה", 
-                "בקרת איכות ופינישים אחרונים", 
-                "השקה ושחרור לאוויר"
-            ];
-
-            async function checkNew() {
-                const qCheck = query(tasksCol, where("userId", "==", uid));
-                const snap = await getDocs(qCheck);
-                if (snap.empty) {
-                    for (let i = 0; i < defaultTasks.length; i++) {
-                        await addDoc(tasksCol, { 
-                            text: defaultTasks[i], 
-                            done: false, 
-                            createdAt: Date.now() - (i*1000), 
-                            userId: uid 
-                        });
-                    }
-                }
-            }
-
             if (unsubscribeSnapshot) unsubscribeSnapshot();
-            unsubscribeSnapshot = onSnapshot(query(tasksCol, where("userId", "==", uid), orderBy("createdAt", "asc")), (snapshot) => {
-                let tasks = [];
-                snapshot.forEach(doc => tasks.push({ id: doc.id, ...doc.data() }));
-                render(tasks);
-            });
+            
+            // האזנה למשימות של המשתמש בלבד, מסודרות לפי זמן יצירה
+            unsubscribeSnapshot = onSnapshot(
+                query(tasksCol, where("userId", "==", uid), orderBy("createdAt", "asc")), 
+                (snapshot) => {
+                    let tasks = [];
+                    snapshot.forEach(doc => tasks.push({ id: doc.id, ...doc.data() }));
+                    render(tasks);
+                },
+                (error) => {
+                    console.error("שגיאה במשיכת הנתונים:", error);
+                    alert("אירעה שגיאה בטעינת המשימות. נסה לרענן את העמוד.");
+                }
+            );
 
+            // הוספת משימה חדשה
             const addTask = async () => {
                 const input = document.getElementById('task-input');
-                if (input.value.trim()) {
-                    await addDoc(tasksCol, { text: input.value, done: false, createdAt: Date.now(), userId: uid });
-                    input.value = "";
+                const taskText = input.value.trim();
+                
+                if (taskText) {
+                    try {
+                        await addDoc(tasksCol, { 
+                            text: taskText, 
+                            done: false, 
+                            createdAt: Date.now(), 
+                            userId: uid 
+                        });
+                        input.value = "";
+                    } catch (error) {
+                        console.error("שגיאה בהוספת משימה:", error);
+                        alert("לא הצלחנו להוסיף את המשימה. נסה שוב.");
+                    }
                 }
             };
-            document.getElementById('add-btn').onclick = addTask;
-            document.getElementById('task-input').onkeypress = (e) => { if(e.key === 'Enter') addTask(); };
 
-            window.toggleTask = async (id, status) => { await updateDoc(doc(db, "tasks", id), { done: !status }); };
-            window.deleteTask = async (id) => { if(confirm("למחוק משימה זו מהפרויקט?")) await deleteDoc(doc(db, "tasks", id)); };
+            document.getElementById('add-btn').onclick = addTask;
+            document.getElementById('task-input').onkeypress = (e) => { 
+                if(e.key === 'Enter') addTask(); 
+            };
 
             let lastPercent = -1;
+
+            // רינדור רשימת המשימות
             function render(tasks) {
                 const container = document.getElementById('tasks-container');
                 container.innerHTML = '';
                 let done = 0;
+
+                // מצב שבו אין משימות בכלל
+                if (tasks.length === 0) {
+                    container.innerHTML = '<div class="empty-state">אין משימות כרגע. התחל להוסיף משימות לפרויקט שלך! ✨</div>';
+                }
+
                 tasks.forEach(t => {
                     if(t.done) done++;
                     const div = document.createElement('div');
@@ -565,22 +576,50 @@
                     
                     div.innerHTML = `
                         <label class="checkbox-wrapper">
-                            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask('${t.id}', ${t.done})">
+                            <input type="checkbox" class="task-checkbox" ${t.done ? 'checked' : ''}>
                             <span class="checkmark"></span>
                         </label>
                         <span class="task-text ${t.done ? 'completed' : ''}">${t.text}</span>
-                        <button class="delete-btn" onclick="deleteTask('${t.id}')">מחק</button>
+                        <button class="delete-btn">מחק</button>
                     `;
+
+                    // חיבור אירוע לשינוי סטטוס משימה
+                    const checkbox = div.querySelector('.task-checkbox');
+                    checkbox.addEventListener('change', async (e) => {
+                        try {
+                            await updateDoc(doc(db, "tasks", t.id), { done: e.target.checked });
+                        } catch (error) {
+                            console.error("שגיאה בעדכון משימה:", error);
+                            alert("לא הצלחנו לעדכן את המשימה.");
+                            e.target.checked = !e.target.checked; // החזרת מצב הצ'קבוקס לקדמותו במקרה של שגיאה
+                        }
+                    });
+
+                    // חיבור אירוע למחיקת משימה
+                    const deleteBtn = div.querySelector('.delete-btn');
+                    deleteBtn.addEventListener('click', async () => {
+                        if(confirm("למחוק משימה זו מהפרויקט?")) {
+                            try {
+                                await deleteDoc(doc(db, "tasks", t.id));
+                            } catch (error) {
+                                console.error("שגיאה במחיקת משימה:", error);
+                                alert("לא הצלחנו למחוק את המשימה.");
+                            }
+                        }
+                    });
+
                     container.appendChild(div);
                 });
 
+                // חישוב אחוזים ועדכון UI
                 const percent = tasks.length ? Math.round((done/tasks.length)*100) : 0;
                 document.getElementById('perc-text').innerText = percent + '%';
                 document.getElementById('main-circle').style.setProperty('--progress', (percent * 3.6) + 'deg');
                 
                 const label = document.getElementById('status-label');
                 
-                if(percent === 0) label.innerText = "יוצאים לדרך! 🚀";
+                if(tasks.length === 0) label.innerText = "הכנס משימה ראשונה 📝";
+                else if(percent === 0) label.innerText = "יוצאים לדרך! 🚀";
                 else if(percent <= 25) label.innerText = "התחלה מעולה! 💪";
                 else if(percent <= 50) label.innerText = "נכנסים לקצב! 🏃‍♂️";
                 else if(percent <= 75) label.innerText = "עברנו את החצי! 🎯";
@@ -593,7 +632,6 @@
                 }
                 lastPercent = percent;
             }
-            checkNew();
         }
     </script>
 </body>
