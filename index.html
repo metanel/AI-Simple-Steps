@@ -468,19 +468,21 @@
         }
 
         .action-btn {
-            color: var(--app-text-muted);
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 700;
-            border: none;
-            background: #F3F4F6;
-            transition: all 0.2s;
-            padding: 6px 10px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    color: var(--app-text-muted);
+    cursor: pointer;
+    font-size: 12px; /* טיפ-טיפה הגדלנו את האימוג'י עצמו כדי שיישב טוב, אבל אתה יכול להשאיר 12 */
+    font-weight: 700;
+    border: none;
+    background: #F3F4F6;
+    transition: all 0.2s;
+    width: 28px;     /* רוחב קבוע */
+    height: 28px;    /* גובה קבוע */
+    padding: 0;      /* ביטלנו את הריווח הישן */
+    border-radius: 8px; /* פינות מעוגלות שעובדות טוב לריבוע */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
         .action-btn:hover {
             background: #E5E7EB;
             color: var(--app-text-main);
