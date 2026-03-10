@@ -15,6 +15,8 @@
             --app-accent: #111418;
             --app-border: #E5E7EB;
             --app-input-bg: #F9FAFB;
+            --app-high-priority: #FFF4F2;
+            --app-high-priority-border: #FCA5A5;
         }
         
         body {
@@ -189,7 +191,7 @@
         .card {
             background: var(--app-card);
             width: 92%;
-            max-width: 560px;
+            max-width: 650px; /* הורחב מעט כדי להכיל את הכפתורים החדשים */
             border-radius: 32px;
             padding: 32px;
             margin-top: 40px;
@@ -228,96 +230,217 @@
             box-shadow: 0 6px 16px rgba(37, 211, 102, 0.2);
         }
         
-        /* שדה הזנה וכפתור */
+        /* אזור הוספת משימה חדש */
+        #trigger-add-btn {
+            width: 100%;
+            background: var(--app-input-bg);
+            color: var(--app-text-main);
+            border: 2px dashed var(--app-border);
+            padding: 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 24px;
+        }
+        #trigger-add-btn:hover {
+            background: #E5E7EB;
+            border-color: #D1D5DB;
+        }
+
+        #add-task-form {
+            display: none; /* מוסתר בהתחלה */
+            background: var(--app-input-bg);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--app-border);
+            animation: slideDown 0.3s ease;
+        }
+
         .input-group {
             display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
+            flex-direction: column;
+            gap: 16px;
             width: 100%;
             box-sizing: border-box;
         }
+
         #task-input {
-            flex-grow: 1;
-            padding: 18px 24px;
-            border: none;
-            border-radius: 20px;
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--app-border);
+            border-radius: 16px;
             font-size: 16px;
             outline: none;
-            background: var(--app-input-bg);
+            background: var(--app-card);
             transition: all 0.2s;
             font-family: inherit;
             color: var(--app-text-main);
             box-sizing: border-box;
         }
         #task-input:focus {
-            background: #F3F4F6;
-            box-shadow: inset 0 0 0 2px var(--app-text-main);
+            border-color: var(--app-text-main);
         }
-        #task-input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+
+        .priority-options {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
         }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--app-text-muted);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .radio-label:hover {
+            background: #E5E7EB;
+        }
+        .radio-label input {
+            accent-color: var(--app-text-main);
+            cursor: pointer;
+        }
+        .radio-label.selected {
+            color: var(--app-text-main);
+            background: white;
+            border-color: var(--app-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+        }
+
         #add-btn {
+            flex-grow: 1;
             background: var(--app-accent);
             color: white;
             border: none;
-            padding: 0 28px;
-            border-radius: 20px;
+            padding: 14px;
+            border-radius: 16px;
             cursor: pointer;
             font-weight: 700;
             font-size: 16px;
             transition: all 0.2s;
-            box-sizing: border-box;
         }
         #add-btn:hover:not(:disabled) {
             background: #374151;
-            transform: scale(1.02);
         }
-        #add-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+        #cancel-add-btn {
+            background: transparent;
+            color: var(--app-text-muted);
+            border: 1px solid var(--app-border);
+            padding: 14px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        #cancel-add-btn:hover {
+            background: #E5E7EB;
+        }
+
+        /* סקשנים של עדיפויות */
+        .priority-section {
+            margin-bottom: 32px;
+            border-radius: 24px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+        .priority-section h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 800;
+            padding-right: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #section-high {
+            background: var(--app-high-priority);
+            border: 1px solid var(--app-high-priority-border);
+        }
+        #section-high h3 {
+            color: #B91C1C;
+        }
+        
+        #section-low {
+            background: var(--app-card);
+            border: 1px solid var(--app-border);
+        }
+        #section-low h3 {
+            color: var(--app-text-muted);
         }
 
         /* משימות ראשיות ותתי משימות */
         .task-wrapper {
-            border-bottom: 1px solid var(--app-border);
-            padding: 12px 0;
+            background: var(--app-card);
+            border: 1px solid var(--app-border);
+            border-radius: 16px;
+            margin-bottom: 12px;
             animation: slideUp 0.4s ease;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
         }
-        .task-wrapper:last-child {
-            border-bottom: none;
+        .task-wrapper:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .task-main-row {
             display: flex;
-            align-items: center;
-            padding: 8px 16px;
-            border-radius: 16px;
+            align-items: flex-start; /* שונה מ-center כדי לאפשר טקסט ארוך */
+            padding: 16px;
             transition: background 0.2s;
-        }
-        .task-main-row:hover {
-            background: var(--app-input-bg);
         }
         
         .task-text-container {
             flex-grow: 1;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             cursor: pointer;
             padding-right: 16px;
             user-select: none;
+            min-width: 0; /* קריטי ל-text-overflow לעבוד בתוך flex */
         }
         
-        .task-text {
-            font-size: 17px;
+        .task-text, .subtask-text {
+            font-size: 16px;
             color: var(--app-text-main);
-            line-height: 1.4;
-            font-weight: 700; /* מודגש יותר למשימה ראשית */
+            line-height: 1.5;
+            font-weight: 700;
             transition: all 0.3s ease;
+            
+            /* הגדרות טקסט מתקפל (Truncation) */
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
             word-break: break-word;
         }
-        .task-text.completed {
+        
+        .subtask-text {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .task-text.expanded, .subtask-text.expanded {
+            -webkit-line-clamp: unset;
+            overflow: visible;
+        }
+
+        .task-text.completed, .subtask-text.completed {
             text-decoration: line-through;
             color: #9CA3AF;
             font-weight: 600;
@@ -325,13 +448,62 @@
 
         .chevron-icon {
             margin-right: 8px;
+            margin-top: 2px;
             color: var(--app-text-muted);
             transition: transform 0.3s ease;
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
         .task-wrapper.open .chevron-icon {
             transform: rotate(180deg);
+        }
+
+        /* כפתורי פעולה (מחיקה, עריכה, העברה) */
+        .action-btns {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+            margin-right: 8px;
+        }
+
+        .action-btn {
+            color: var(--app-text-muted);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            background: #F3F4F6;
+            transition: all 0.2s;
+            padding: 6px 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-btn:hover {
+            background: #E5E7EB;
+            color: var(--app-text-main);
+        }
+        .action-btn.delete:hover {
+            color: #EF4444;
+            background: #FEE2E2;
+        }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* אינפוט לעריכה במקום */
+        .edit-input {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid var(--app-text-main);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            outline: none;
         }
 
         /* אקורדיון תתי משימות */
@@ -339,38 +511,31 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-in-out;
-            padding-right: 38px; /* הזחה פנימה */
+            padding-right: 48px;
             padding-left: 16px;
+            background: #FAFAFA;
         }
         .task-wrapper.open .subtasks-container {
-            max-height: 1000px; /* גובה מקסימלי מספיק גדול לפתיחה חלקה */
+            max-height: 2000px;
+            padding-bottom: 16px;
         }
 
         .subtask-item {
             display: flex;
-            align-items: center;
-            padding: 10px 16px;
-            background: #F3F4F6; /* רקע אפור מובחן */
+            align-items: flex-start;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid var(--app-border);
             border-radius: 12px;
             margin-top: 8px;
-            transition: background 0.2s;
-        }
-        .subtask-item:hover {
-            background: #E5E7EB;
+            transition: all 0.2s;
         }
         
-        .subtask-text {
+        .subtask-text-container {
             flex-grow: 1;
-            font-size: 15px;
-            color: var(--app-text-main);
-            font-weight: 600;
             padding-right: 12px;
-            transition: all 0.3s ease;
-            word-break: break-word;
-        }
-        .subtask-text.completed {
-            text-decoration: line-through;
-            color: #9CA3AF;
+            min-width: 0;
+            cursor: pointer;
         }
 
         /* הזנת תת-משימה חדשה */
@@ -378,16 +543,15 @@
             display: flex;
             gap: 8px;
             margin-top: 12px;
-            margin-bottom: 8px;
         }
         .subtask-input {
             flex-grow: 1;
-            padding: 10px 16px;
+            padding: 12px 16px;
             border: 1px solid var(--app-border);
             border-radius: 12px;
             font-size: 14px;
             outline: none;
-            background: var(--app-card);
+            background: white;
             transition: all 0.2s;
             font-family: inherit;
         }
@@ -395,9 +559,9 @@
             border-color: var(--app-text-main);
         }
         .add-subtask-btn {
-            background: var(--app-input-bg);
-            color: var(--app-text-main);
-            border: 1px solid var(--app-border);
+            background: var(--app-text-main);
+            color: white;
+            border: none;
             padding: 0 16px;
             border-radius: 12px;
             cursor: pointer;
@@ -406,17 +570,18 @@
             transition: all 0.2s;
         }
         .add-subtask-btn:hover:not(:disabled) {
-            background: #E5E7EB;
+            background: #374151;
         }
         
         /* צ'קבוקסים */
         .checkbox-wrapper {
             position: relative;
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             margin-left: 12px;
             cursor: pointer;
             flex-shrink: 0;
+            margin-top: 2px;
         }
         .checkbox-wrapper input {
             opacity: 0;
@@ -428,11 +593,11 @@
             position: absolute;
             top: 0;
             left: 0;
-            height: 26px;
-            width: 26px;
+            height: 24px;
+            width: 24px;
             background-color: transparent;
             border: 2px solid #D1D5DB;
-            border-radius: 50%; /* משימה ראשית - עיגול */
+            border-radius: 50%;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
@@ -440,7 +605,7 @@
             box-sizing: border-box;
         }
         .subtask-checkmark {
-            border-radius: 6px !important; /* תת משימה - ריבוע מעוגל */
+            border-radius: 8px !important;
         }
         .checkbox-wrapper:hover input:not(:disabled) ~ .checkmark {
             border-color: var(--app-text-main);
@@ -469,35 +634,11 @@
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .delete-btn {
-            color: #D1D5DB;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 700;
-            margin-right: 8px;
-            border: none;
-            background: none;
-            transition: all 0.2s;
-            padding: 8px 12px;
-            border-radius: 16px;
-            flex-shrink: 0;
-        }
-        .delete-btn:hover {
-            color: #EF4444;
-            background: #FEE2E2;
-        }
-        .delete-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: none;
-            color: #D1D5DB;
-        }
-
         .empty-state {
             text-align: center;
             color: var(--app-text-muted);
-            padding: 32px 0;
-            font-size: 16px;
+            padding: 24px 0;
+            font-size: 15px;
             font-weight: 600;
         }
 
@@ -531,22 +672,24 @@
         }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: rotate(45deg) scale(0.5); } 100% { opacity: 1; transform: rotate(45deg) scale(1); } }
 
         /* התאמות למובייל */
         @media (max-width: 600px) {
             .card { padding: 24px; width: 92%; border-radius: 28px; }
             .user-welcome { font-size: 20px; }
-            .input-group { flex-direction: column; gap: 12px; }
-            #task-input { width: 100%; padding: 16px 20px; }
-            #add-btn { padding: 16px; width: 100%; }
             .wolt-circle { width: 200px; height: 200px; margin-top: 32px; }
             .inner-circle { width: 176px; height: 176px; }
             .percentage { font-size: 48px; }
-            .task-text { font-size: 16px; }
             .login-card { padding: 40px 24px; width: 92%; }
             .share-btn { width: 100%; }
-            .subtasks-container { padding-right: 16px; }
+            .priority-options { flex-direction: column; gap: 8px; }
+            .action-btns { flex-direction: column; gap: 6px; }
+            .action-btn { font-size: 11px; padding: 6px; width: 100%; }
+            .task-main-row { padding: 12px; }
+            .subtasks-container { padding-right: 16px; padding-left: 8px; }
+            .subtask-item { padding: 10px; }
         }
     </style>
 </head>
@@ -564,8 +707,8 @@
 
     <div id="login-screen">
         <div class="login-card">
-            <h2>איזה כיף שבאת! 👋</h2>
-            <p style="color:var(--app-text-muted); margin-bottom:32px; font-size: 16px;">התחבר כדי לנהל את הפרויקט שלך</p>
+            <h2>איזה כיף שהגעת! 👋</h2>
+            <p style="color:var(--app-text-muted); margin-bottom:32px; font-size: 16px;">לניהול הפרויקט שלך</p>
             <button id="login-go" class="login-btn">
                 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
                 התחברות עם Google
@@ -589,11 +732,45 @@
                 שתף התקדמות
             </button>
 
-            <div class="input-group">
-                <input type="text" id="task-input" maxlength="70" placeholder="להוסיף משימה לפרויקט?">
-                <button id="add-btn">הוספה</button>
+            <button id="trigger-add-btn">להוספת משימה לפרויקט +</button>
+
+            <div id="add-task-form">
+                <div class="input-group">
+                    <input type="text" id="task-input" placeholder="מה המשימה?">
+                    
+                    <div class="priority-options">
+                        <label class="radio-label selected" id="label-high">
+                            <input type="radio" name="priority" value="high" checked>
+                            חשובה ביותר 🔥
+                        </label>
+                        <label class="radio-label" id="label-low">
+                            <input type="radio" name="priority" value="low">
+                            חשובה אך לא לעכשיו 🗂️
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button id="cancel-add-btn">ביטול</button>
+                        <button id="add-btn">הוספה</button>
+                    </div>
+                </div>
             </div>
-            <div id="tasks-container">טוען את תוכנית העבודה שלך...</div>
+
+            <div id="tasks-container">
+                <div id="section-high" class="priority-section" style="display: none;">
+                    <h3>חשובה ביותר 🔥</h3>
+                    <div id="high-tasks-list"></div>
+                </div>
+
+                <div id="section-low" class="priority-section" style="display: none;">
+                    <h3>חשובה אך לא לעכשיו 🗂️</h3>
+                    <div id="low-tasks-list"></div>
+                </div>
+
+                <div id="empty-state-global" class="empty-state" style="display: none;">
+                    אין משימות כרגע. לחץ על הכפתור למעלה כדי להתחיל! ✨
+                </div>
+            </div>
         </div>
     </div>
 
@@ -621,10 +798,10 @@
 
         let currentUid = null;
         let unsubscribeSnapshot = null;
-        
-        // שמירת המצב (State) של האקורדיונים הפתוחים
         let openAccordions = new Set();
+        let toastTimeout = null;
 
+        // אלמנטים ב-DOM
         const loginScreen = document.getElementById('login-screen');
         const trackerScreen = document.getElementById('tracker-screen');
         const loginBtn = document.getElementById('login-go');
@@ -633,7 +810,14 @@
         const shareBtn = document.getElementById('share-whatsapp-btn');
         const toastEl = document.getElementById('toast-notification');
         
-        let toastTimeout = null;
+        // אלמנטים להוספת משימה
+        const triggerAddBtn = document.getElementById('trigger-add-btn');
+        const addTaskForm = document.getElementById('add-task-form');
+        const cancelAddBtn = document.getElementById('cancel-add-btn');
+        const addBtn = document.getElementById('add-btn');
+        const taskInput = document.getElementById('task-input');
+        const radioLabels = document.querySelectorAll('.radio-label');
+        const priorityRadios = document.getElementsByName('priority');
 
         function showToast(message, type = "default") {
             toastEl.textContent = message;
@@ -644,6 +828,33 @@
                 toastEl.classList.remove('show');
             }, 3000);
         }
+
+        // ניהול טופס ההוספה
+        triggerAddBtn.addEventListener('click', () => {
+            triggerAddBtn.style.display = 'none';
+            addTaskForm.style.display = 'block';
+            taskInput.focus();
+        });
+
+        cancelAddBtn.addEventListener('click', () => {
+            addTaskForm.style.display = 'none';
+            triggerAddBtn.style.display = 'block';
+            taskInput.value = '';
+        });
+
+        radioLabels.forEach(label => {
+            label.addEventListener('click', () => {
+                radioLabels.forEach(l => l.classList.remove('selected'));
+                label.classList.add('selected');
+            });
+        });
+
+        // סגירת טקסטים מתקפלים בלחיצה מחוץ לאלמנט
+        document.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('task-text') && !e.target.classList.contains('subtask-text')) {
+                document.querySelectorAll('.expanded').forEach(el => el.classList.remove('expanded'));
+            }
+        });
 
         loginBtn.onclick = () => {
             signInWithPopup(auth, provider).catch(err => {
@@ -675,7 +886,7 @@
                 initTracker(currentUid);
             } else {
                 currentUid = null;
-                openAccordions.clear(); // ניקוי הזיכרון בהתנתקות
+                openAccordions.clear();
                 loginScreen.style.display = 'flex';
                 trackerScreen.style.display = 'none';
                 logoutBtn.style.display = 'none';
@@ -700,57 +911,80 @@
             );
 
             const addTask = async () => {
-                const input = document.getElementById('task-input');
-                const btn = document.getElementById('add-btn');
-                const taskText = input.value.trim();
+                const taskText = taskInput.value.trim();
+                let selectedPriority = 'low'; // ברירת מחדל
+                
+                for (const radio of priorityRadios) {
+                    if (radio.checked) {
+                        selectedPriority = radio.value;
+                        break;
+                    }
+                }
                 
                 if (taskText) {
-                    input.disabled = true;
-                    btn.disabled = true;
+                    taskInput.disabled = true;
+                    addBtn.disabled = true;
                     
                     try {
                         await addDoc(tasksCol, { 
                             text: taskText, 
                             done: false,
-                            subtasks: [], // אתחול מערך תתי משימות למשימה חדשה
+                            priority: selectedPriority, // הוספת שדה עדיפות
+                            subtasks: [],
                             createdAt: Date.now(), 
                             userId: uid 
                         });
-                        input.value = "";
+                        taskInput.value = "";
+                        // סגירת הטופס אחרי הוספה מוצלחת
+                        addTaskForm.style.display = 'none';
+                        triggerAddBtn.style.display = 'block';
                     } catch (error) {
                         console.error("שגיאה בהוספת משימה:", error);
                         showToast("לא הצלחנו להוסיף את המשימה. נסה שוב.", "error");
                     } finally {
-                        input.disabled = false;
-                        btn.disabled = false;
-                        input.focus();
+                        taskInput.disabled = false;
+                        addBtn.disabled = false;
                     }
                 }
             };
 
-            document.getElementById('add-btn').onclick = addTask;
-            document.getElementById('task-input').onkeypress = (e) => { 
+            addBtn.onclick = addTask;
+            taskInput.onkeypress = (e) => { 
                 if(e.key === 'Enter') addTask(); 
             };
 
             let lastPercent = -1;
 
             function render(tasks) {
-                const container = document.getElementById('tasks-container');
-                container.innerHTML = '';
+                const highContainer = document.getElementById('high-tasks-list');
+                const lowContainer = document.getElementById('low-tasks-list');
+                const sectionHigh = document.getElementById('section-high');
+                const sectionLow = document.getElementById('section-low');
+                const globalEmpty = document.getElementById('empty-state-global');
                 
-                // משתנים לחישוב המשקל הדינמי של האחוזים
+                highContainer.innerHTML = '';
+                lowContainer.innerHTML = '';
+                
                 let totalWeight = tasks.length;
                 let completedWeight = 0;
+                let highCount = 0;
+                let lowCount = 0;
 
-                shareBtn.style.display = 'flex';
+                shareBtn.style.display = tasks.length > 0 ? 'flex' : 'none';
 
                 if (tasks.length === 0) {
-                    container.innerHTML = '<div class="empty-state">אין משימות כרגע. התחל להוסיף משימות לפרויקט שלך! ✨</div>';
+                    sectionHigh.style.display = 'none';
+                    sectionLow.style.display = 'none';
+                    globalEmpty.style.display = 'block';
+                } else {
+                    globalEmpty.style.display = 'none';
                 }
 
                 tasks.forEach(t => {
-                    // חישוב המשקל של המשימה הנוכחית
+                    // תאימות לאחור (למשימות ישנות שאין להן priority)
+                    const priority = t.priority || 'low'; 
+
+                    // חישוב המשקל האחיד לכולם
                     const subtasks = t.subtasks || [];
                     if (subtasks.length > 0) {
                         const doneSubtasks = subtasks.filter(s => s.done).length;
@@ -759,73 +993,122 @@
                         completedWeight += 1;
                     }
 
-                    // יצירת עטיפת המשימה (כולל אקורדיון)
                     const wrapper = document.createElement('div');
                     wrapper.className = `task-wrapper ${openAccordions.has(t.id) ? 'open' : ''}`;
                     
-                    // HTML של המשימה הראשית והאקורדיון הבסיסי
                     wrapper.innerHTML = `
                         <div class="task-main-row">
                             <label class="checkbox-wrapper">
                                 <input type="checkbox" class="task-checkbox" ${t.done ? 'checked' : ''}>
                                 <span class="checkmark"></span>
                             </label>
+                            
                             <div class="task-text-container">
+                                <span class="chevron-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                                </span>
                                 <span class="task-text ${t.done ? 'completed' : ''}"></span>
                             </div>
-                            <button class="delete-btn main-delete-btn">מחק</button>
+
+                            <div class="action-btns">
+                                <button class="action-btn edit-btn" title="עריכה">✏️ עריכה</button>
+                                <button class="action-btn move-btn" title="העבר למחלקה השניה">${priority === 'high' ? '⬇️ העבר' : '⬆️ העבר'}</button>
+                                <button class="action-btn delete-btn main-delete-btn" title="מחיקה">🗑️ מחיקה</button>
+                            </div>
                         </div>
                         <div class="subtasks-container">
                             <div class="subtasks-list"></div>
                             <div class="add-subtask-group">
-                                <input type="text" class="subtask-input" placeholder="הוסף תת-משימה..." maxlength="50">
+                                <input type="text" class="subtask-input" placeholder="הוסף תת-משימה...">
                                 <button class="add-subtask-btn">הוסף</button>
                             </div>
                         </div>
                     `;
                     
-                    // הזרקת טקסט מוגנת XSS
                     const textContainer = wrapper.querySelector('.task-text-container');
                     const taskTextEl = wrapper.querySelector('.task-text');
                     taskTextEl.textContent = t.text;
                     
-                    // הוספת חץ אם יש תתי משימות או כאופציה לפתוח
-                    const chevron = document.createElement('span');
-                    chevron.className = 'chevron-icon';
-                    chevron.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
-                    textContainer.insertBefore(chevron, taskTextEl);
+                    // פתיחת/סגירת טקסט מקוצר במשימה ראשית
+                    taskTextEl.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        taskTextEl.classList.toggle('expanded');
+                    });
 
-                    // --- אירועים למשימה הראשית ---
-                    
-                    // פתיחה וסגירה של אקורדיון
-                    textContainer.addEventListener('click', () => {
-                        if (wrapper.classList.contains('open')) {
-                            wrapper.classList.remove('open');
-                            openAccordions.delete(t.id);
-                        } else {
-                            wrapper.classList.add('open');
-                            openAccordions.add(t.id);
+                    // פתיחה וסגירה של אקורדיון (בלחיצה על הקונטיינר מסביב לטקסט)
+                    textContainer.addEventListener('click', (e) => {
+                        if (e.target !== taskTextEl) {
+                            if (wrapper.classList.contains('open')) {
+                                wrapper.classList.remove('open');
+                                openAccordions.delete(t.id);
+                            } else {
+                                wrapper.classList.add('open');
+                                openAccordions.add(t.id);
+                            }
                         }
                     });
 
-                    // שינוי צ'קבוקס משימה ראשית -> מסנכרן את כל תתי המשימות
+                    // צ'קבוקס משימה ראשית
                     const mainCheckbox = wrapper.querySelector('.task-checkbox');
                     mainCheckbox.addEventListener('change', async (e) => {
                         mainCheckbox.disabled = true;
                         const isChecked = e.target.checked;
                         const updatedSubtasks = subtasks.map(s => ({ ...s, done: isChecked }));
-                        
                         try {
-                            await updateDoc(doc(db, "tasks", t.id), { 
-                                done: isChecked,
-                                subtasks: updatedSubtasks
-                            });
+                            await updateDoc(doc(db, "tasks", t.id), { done: isChecked, subtasks: updatedSubtasks });
                         } catch (error) {
-                            console.error("שגיאה בעדכון משימה:", error);
-                            showToast("לא הצלחנו לעדכן את המשימה.", "error");
+                            showToast("שגיאה בעדכון.", "error");
                             e.target.checked = !isChecked;
                         } finally {
                             mainCheckbox.disabled = false;
+                        }
+                    });
+
+                    // כפתור עריכה - משימה ראשית
+                    const editBtn = wrapper.querySelector('.edit-btn');
+                    let isEditing = false;
+                    editBtn.addEventListener('click', async () => {
+                        if (!isEditing) {
+                            // כניסה למצב עריכה
+                            isEditing = true;
+                            editBtn.innerHTML = '💾 שמירה';
+                            const inputEl = document.createElement('input');
+                            inputEl.type = 'text';
+                            inputEl.className = 'edit-input';
+                            inputEl.value = t.text;
+                            textContainer.replaceChild(inputEl, taskTextEl);
+                            inputEl.focus();
+                        } else {
+                            // שמירת עריכה
+                            const inputEl = wrapper.querySelector('.edit-input');
+                            const newVal = inputEl.value.trim();
+                            if (newVal && newVal !== t.text) {
+                                editBtn.disabled = true;
+                                try {
+                                    await updateDoc(doc(db, "tasks", t.id), { text: newVal });
+                                } catch (error) {
+                                    showToast("שגיאה בשמירה.", "error");
+                                    editBtn.disabled = false;
+                                }
+                            } else {
+                                // ביטול עריכה אם אין שינוי
+                                isEditing = false;
+                                editBtn.innerHTML = '✏️ עריכה';
+                                textContainer.replaceChild(taskTextEl, inputEl);
+                            }
+                        }
+                    });
+
+                    // כפתור העברה בין מחלקות
+                    const moveBtn = wrapper.querySelector('.move-btn');
+                    moveBtn.addEventListener('click', async () => {
+                        moveBtn.disabled = true;
+                        const newPriority = priority === 'high' ? 'low' : 'high';
+                        try {
+                            await updateDoc(doc(db, "tasks", t.id), { priority: newPriority });
+                        } catch (error) {
+                            showToast("שגיאה בהעברת המשימה.", "error");
+                            moveBtn.disabled = false;
                         }
                     });
 
@@ -837,16 +1120,14 @@
                             try {
                                 await deleteDoc(doc(db, "tasks", t.id));
                             } catch (error) {
-                                console.error("שגיאה במחיקת משימה:", error);
-                                showToast("לא הצלחנו למחוק את המשימה.", "error");
+                                showToast("שגיאה במחיקה.", "error");
                                 mainDeleteBtn.disabled = false;
                             }
                         }
                     });
 
-                    // --- טיפול בתתי המשימות ---
+                    // טיפול בתתי המשימות
                     const subtasksList = wrapper.querySelector('.subtasks-list');
-                    
                     subtasks.forEach(sub => {
                         const subDiv = document.createElement('div');
                         subDiv.className = 'subtask-item';
@@ -855,35 +1136,77 @@
                                 <input type="checkbox" class="subtask-checkbox" ${sub.done ? 'checked' : ''}>
                                 <span class="checkmark subtask-checkmark"></span>
                             </label>
-                            <span class="subtask-text ${sub.done ? 'completed' : ''}"></span>
-                            <button class="delete-btn sub-delete-btn">מחק</button>
+                            
+                            <div class="subtask-text-container">
+                                <span class="subtask-text ${sub.done ? 'completed' : ''}"></span>
+                            </div>
+
+                            <div class="action-btns">
+                                <button class="action-btn edit-sub-btn">✏️ עריכה</button>
+                                <button class="action-btn delete-btn sub-delete-btn">🗑️ מחיקה</button>
+                            </div>
                         `;
                         
-                        // הזרקת טקסט מוגנת XSS לתת-משימה
-                        subDiv.querySelector('.subtask-text').textContent = sub.text;
+                        const subTextContainer = subDiv.querySelector('.subtask-text-container');
+                        const subTextEl = subDiv.querySelector('.subtask-text');
+                        subTextEl.textContent = sub.text;
 
-                        // שינוי סטטוס תת-משימה -> עדכון הפריט הספציפי ובדיקה מול הראשי
+                        // פתיחה/סגירה טקסט תת משימה ארוך
+                        subTextEl.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            subTextEl.classList.toggle('expanded');
+                        });
+
+                        // צ'קבוקס תת משימה
                         const subCheckbox = subDiv.querySelector('.subtask-checkbox');
                         subCheckbox.addEventListener('change', async (e) => {
                             subCheckbox.disabled = true;
                             const isChecked = e.target.checked;
-                            
                             const newSubtasks = [...subtasks];
                             const targetIndex = newSubtasks.findIndex(s => s.id === sub.id);
                             if(targetIndex > -1) {
                                 newSubtasks[targetIndex].done = isChecked;
-                                // בודק האם *כל* תתי המשימות סוימו עכשיו
                                 const allDone = newSubtasks.every(s => s.done);
-                                
                                 try {
-                                    await updateDoc(doc(db, "tasks", t.id), { 
-                                        subtasks: newSubtasks,
-                                        done: allDone // מעדכן את מצב המשימה הראשית בהתאם
-                                    });
+                                    await updateDoc(doc(db, "tasks", t.id), { subtasks: newSubtasks, done: allDone });
                                 } catch (error) {
-                                    console.error("שגיאה בעדכון תת-משימה:", error);
-                                    showToast("לא הצלחנו לעדכן תת-משימה.", "error");
                                     e.target.checked = !isChecked;
+                                }
+                            }
+                        });
+
+                        // עריכת תת משימה
+                        const subEditBtn = subDiv.querySelector('.edit-sub-btn');
+                        let isSubEditing = false;
+                        subEditBtn.addEventListener('click', async () => {
+                            if (!isSubEditing) {
+                                isSubEditing = true;
+                                subEditBtn.innerHTML = '💾 שמירה';
+                                const inputEl = document.createElement('input');
+                                inputEl.type = 'text';
+                                inputEl.className = 'edit-input';
+                                inputEl.value = sub.text;
+                                subTextContainer.replaceChild(inputEl, subTextEl);
+                                inputEl.focus();
+                            } else {
+                                const inputEl = subDiv.querySelector('.edit-input');
+                                const newVal = inputEl.value.trim();
+                                if (newVal && newVal !== sub.text) {
+                                    subEditBtn.disabled = true;
+                                    const newSubtasks = [...subtasks];
+                                    const targetIndex = newSubtasks.findIndex(s => s.id === sub.id);
+                                    if(targetIndex > -1) {
+                                        newSubtasks[targetIndex].text = newVal;
+                                        try {
+                                            await updateDoc(doc(db, "tasks", t.id), { subtasks: newSubtasks });
+                                        } catch (error) {
+                                            subEditBtn.disabled = false;
+                                        }
+                                    }
+                                } else {
+                                    isSubEditing = false;
+                                    subEditBtn.innerHTML = '✏️ עריכה';
+                                    subTextContainer.replaceChild(subTextEl, inputEl);
                                 }
                             }
                         });
@@ -893,17 +1216,10 @@
                         subDeleteBtn.addEventListener('click', async () => {
                             subDeleteBtn.disabled = true;
                             const newSubtasks = subtasks.filter(s => s.id !== sub.id);
-                            // אם מחקנו תת משימה, צריך לבדוק מחדש אם נשארו תתי משימות ואם כולן מוכנות
                             const allDone = newSubtasks.length > 0 ? newSubtasks.every(s => s.done) : t.done;
-                            
                             try {
-                                await updateDoc(doc(db, "tasks", t.id), { 
-                                    subtasks: newSubtasks,
-                                    done: allDone
-                                });
+                                await updateDoc(doc(db, "tasks", t.id), { subtasks: newSubtasks, done: allDone });
                             } catch (error) {
-                                console.error("שגיאה במחיקת תת-משימה:", error);
-                                showToast("לא הצלחנו למחוק תת-משימה.", "error");
                                 subDeleteBtn.disabled = false;
                             }
                         });
@@ -911,35 +1227,21 @@
                         subtasksList.appendChild(subDiv);
                     });
 
-                    // --- הוספת תת-משימה חדשה ---
+                    // הוספת תת משימה
                     const addSubInput = wrapper.querySelector('.subtask-input');
                     const addSubBtn = wrapper.querySelector('.add-subtask-btn');
-                    
                     const handleAddSubtask = async () => {
                         const val = addSubInput.value.trim();
                         if(val) {
                             addSubInput.disabled = true;
                             addSubBtn.disabled = true;
-                            
-                            const newSubtask = {
-                                id: Date.now().toString(), // מזהה ייחודי לתת המשימה
-                                text: val,
-                                done: false
-                            };
-                            
-                            const newSubtasks = [...subtasks, newSubtask];
-                            // כשיש תת משימה חדשה שלא בוצעה, המשימה הראשית בוודאות כבר לא מוכנה
+                            const newSubtasks = [...subtasks, { id: Date.now().toString(), text: val, done: false }];
                             try {
-                                await updateDoc(doc(db, "tasks", t.id), { 
-                                    subtasks: newSubtasks,
-                                    done: false 
-                                });
+                                await updateDoc(doc(db, "tasks", t.id), { subtasks: newSubtasks, done: false });
                                 addSubInput.value = "";
-                                // שומר את האקורדיון פתוח כדי שהמשתמש יראה מה הוא הוסיף
                                 openAccordions.add(t.id);
                             } catch (error) {
-                                console.error("שגיאה בהוספת תת-משימה:", error);
-                                showToast("לא הצלחנו להוסיף תת-משימה.", "error");
+                                showToast("שגיאה בהוספה.", "error");
                             } finally {
                                 addSubInput.disabled = false;
                                 addSubBtn.disabled = false;
@@ -947,22 +1249,29 @@
                             }
                         }
                     };
-
                     addSubBtn.addEventListener('click', handleAddSubtask);
-                    addSubInput.addEventListener('keypress', (e) => {
-                        if(e.key === 'Enter') handleAddSubtask();
-                    });
+                    addSubInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleAddSubtask(); });
 
-                    container.appendChild(wrapper);
+                    // מיון למחלקות
+                    if (priority === 'high') {
+                        highContainer.appendChild(wrapper);
+                        highCount++;
+                    } else {
+                        lowContainer.appendChild(wrapper);
+                        lowCount++;
+                    }
                 });
 
-                // חישוב אחוזים משוקללים ועדכון UI
+                // הצגה/הסתרה של מחלקות בהתאם לכמות
+                sectionHigh.style.display = highCount > 0 ? 'block' : 'none';
+                sectionLow.style.display = lowCount > 0 ? 'block' : 'none';
+
+                // עדכון אחוזים ועיגול
                 const percent = totalWeight > 0 ? Math.round((completedWeight / totalWeight) * 100) : 0;
                 document.getElementById('perc-text').innerText = percent + '%';
                 document.getElementById('main-circle').style.setProperty('--progress', (percent * 3.6) + 'deg');
                 
                 const label = document.getElementById('status-label');
-                
                 if(tasks.length === 0) label.innerText = "הכנס משימה ראשונה";
                 else if(percent === 0) label.innerText = "יוצאים לדרך! 🚀";
                 else if(percent <= 25) label.innerText = "התחלה מעולה! 💪";
