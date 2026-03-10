@@ -8,12 +8,12 @@
     <style>
         :root {
             /* Premium Light Palette (One Zero Inspired) */
-            --app-bg: #F4F5F7; /* Soft light gray background */
-            --app-card: #FFFFFF; /* Pure white cards */
-            --app-text-main: #111418; /* Near black for sharp typography */
-            --app-text-muted: #6B7280; /* Elegant gray for secondary text */
-            --app-accent: #111418; /* Dark/Black for primary actions */
-            --app-border: #E5E7EB; /* Very subtle borders */
+            --app-bg: #F4F5F7;
+            --app-card: #FFFFFF;
+            --app-text-main: #111418;
+            --app-text-muted: #6B7280;
+            --app-accent: #111418;
+            --app-border: #E5E7EB;
             --app-input-bg: #F9FAFB;
         }
         
@@ -215,7 +215,7 @@
             cursor: pointer;
             font-weight: 700;
             font-size: 15px;
-            display: flex;
+            display: none; /* מוסתר כברירת מחדל, יופיע רק לאחר טעינת נתונים */
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -253,6 +253,10 @@
             background: #F3F4F6;
             box-shadow: inset 0 0 0 2px var(--app-text-main);
         }
+        #task-input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         #add-btn {
             background: var(--app-accent);
             color: white;
@@ -265,9 +269,14 @@
             transition: all 0.2s;
             box-sizing: border-box;
         }
-        #add-btn:hover {
+        #add-btn:hover:not(:disabled) {
             background: #374151;
             transform: scale(1.02);
+        }
+        #add-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* משימות */
@@ -295,6 +304,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
             padding-right: 16px;
+            word-break: break-word;
         }
         .task-text.completed {
             text-decoration: line-through;
@@ -332,12 +342,16 @@
             justify-content: center;
             box-sizing: border-box;
         }
-        .checkbox-wrapper:hover input ~ .checkmark {
+        .checkbox-wrapper:hover input:not(:disabled) ~ .checkmark {
             border-color: var(--app-text-main);
         }
         .checkbox-wrapper input:checked ~ .checkmark {
             background-color: var(--app-text-main);
             border-color: var(--app-text-main);
+        }
+        .checkbox-wrapper input:disabled ~ .checkmark {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         .checkmark::after {
             content: "";
@@ -372,6 +386,12 @@
             color: #EF4444;
             background: #FEE2E2;
         }
+        .delete-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: none;
+            color: #D1D5DB;
+        }
 
         .empty-state {
             text-align: center;
@@ -379,6 +399,35 @@
             padding: 32px 0;
             font-size: 16px;
             font-weight: 600;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--app-text-main);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            z-index: 1000;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .toast.error {
+            background: #EF4444;
         }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -447,6 +496,8 @@
         </div>
     </div>
 
+    <div id="toast-notification" class="toast"></div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -476,11 +527,25 @@
         const logoutBtn = document.getElementById('logout-btn');
         const userDisplay = document.getElementById('user-display');
         const shareBtn = document.getElementById('share-whatsapp-btn');
+        const toastEl = document.getElementById('toast-notification');
+        
+        let toastTimeout = null;
+
+        // פונקציית Toast להצגת הודעות מערכת במקום alert
+        function showToast(message, type = "default") {
+            toastEl.textContent = message;
+            toastEl.className = `toast show ${type === 'error' ? 'error' : ''}`;
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, 3000);
+        }
 
         loginBtn.onclick = () => {
             signInWithPopup(auth, provider).catch(err => {
                 console.error("שגיאת התחברות:", err);
-                alert("הייתה בעיה בהתחברות, נסה שוב.");
+                showToast("הייתה בעיה בהתחברות, נסה שוב.", "error");
             });
         };
 
@@ -501,6 +566,7 @@
                 trackerScreen.style.display = 'flex';
                 logoutBtn.style.display = 'block';
                 userDisplay.innerText = `ההתקדמות של ${user.displayName.split(' ')[0]}`;
+                shareBtn.style.display = 'none'; // נחכה לרינדור הראשון כדי להציג את כפתור השיתוף
                 
                 window.history.replaceState({}, document.title, window.location.pathname);
                 initTracker(currentUid);
@@ -516,7 +582,6 @@
         function initTracker(uid) {
             if (unsubscribeSnapshot) unsubscribeSnapshot();
             
-            // האזנה למשימות של המשתמש בלבד, מסודרות לפי זמן יצירה
             unsubscribeSnapshot = onSnapshot(
                 query(tasksCol, where("userId", "==", uid), orderBy("createdAt", "asc")), 
                 (snapshot) => {
@@ -526,16 +591,21 @@
                 },
                 (error) => {
                     console.error("שגיאה במשיכת הנתונים:", error);
-                    alert("אירעה שגיאה בטעינת המשימות. נסה לרענן את העמוד.");
+                    showToast("אירעה שגיאה בטעינת המשימות. נסה לרענן את העמוד.", "error");
                 }
             );
 
-            // הוספת משימה חדשה
+            // הוספת משימה חדשה עם מנגנון מניעת כפילויות (Double Submit)
             const addTask = async () => {
                 const input = document.getElementById('task-input');
+                const btn = document.getElementById('add-btn');
                 const taskText = input.value.trim();
                 
                 if (taskText) {
+                    // נטרול הכפתור והשדה בזמן השליחה לשרת
+                    input.disabled = true;
+                    btn.disabled = true;
+                    
                     try {
                         await addDoc(tasksCol, { 
                             text: taskText, 
@@ -546,7 +616,12 @@
                         input.value = "";
                     } catch (error) {
                         console.error("שגיאה בהוספת משימה:", error);
-                        alert("לא הצלחנו להוסיף את המשימה. נסה שוב.");
+                        showToast("לא הצלחנו להוסיף את המשימה. נסה שוב.", "error");
+                    } finally {
+                        // החזרת השדה והכפתור לפעולה
+                        input.disabled = false;
+                        btn.disabled = false;
+                        input.focus();
                     }
                 }
             };
@@ -558,13 +633,14 @@
 
             let lastPercent = -1;
 
-            // רינדור רשימת המשימות
             function render(tasks) {
                 const container = document.getElementById('tasks-container');
                 container.innerHTML = '';
                 let done = 0;
 
-                // מצב שבו אין משימות בכלל
+                // הצגת כפתור שיתוף לאחר הטעינה הראשונית
+                shareBtn.style.display = 'flex';
+
                 if (tasks.length === 0) {
                     container.innerHTML = '<div class="empty-state">אין משימות כרגע. התחל להוסיף משימות לפרויקט שלך! ✨</div>';
                 }
@@ -574,36 +650,43 @@
                     const div = document.createElement('div');
                     div.className = 'task-item';
                     
+                    // יצירת ה-HTML הבסיסי ללא הטקסט כדי למנוע XSS
                     div.innerHTML = `
                         <label class="checkbox-wrapper">
                             <input type="checkbox" class="task-checkbox" ${t.done ? 'checked' : ''}>
                             <span class="checkmark"></span>
                         </label>
-                        <span class="task-text ${t.done ? 'completed' : ''}">${t.text}</span>
+                        <span class="task-text ${t.done ? 'completed' : ''}"></span>
                         <button class="delete-btn">מחק</button>
                     `;
+                    
+                    // הזרקת הטקסט בצורה בטוחה (מניעת XSS)
+                    div.querySelector('.task-text').textContent = t.text;
 
-                    // חיבור אירוע לשינוי סטטוס משימה
                     const checkbox = div.querySelector('.task-checkbox');
                     checkbox.addEventListener('change', async (e) => {
+                        checkbox.disabled = true; // נטרול זמני למניעת לחיצות כפולות
                         try {
                             await updateDoc(doc(db, "tasks", t.id), { done: e.target.checked });
                         } catch (error) {
                             console.error("שגיאה בעדכון משימה:", error);
-                            alert("לא הצלחנו לעדכן את המשימה.");
-                            e.target.checked = !e.target.checked; // החזרת מצב הצ'קבוקס לקדמותו במקרה של שגיאה
+                            showToast("לא הצלחנו לעדכן את המשימה.", "error");
+                            e.target.checked = !e.target.checked;
+                        } finally {
+                            checkbox.disabled = false;
                         }
                     });
 
-                    // חיבור אירוע למחיקת משימה
                     const deleteBtn = div.querySelector('.delete-btn');
                     deleteBtn.addEventListener('click', async () => {
                         if(confirm("למחוק משימה זו מהפרויקט?")) {
+                            deleteBtn.disabled = true;
                             try {
                                 await deleteDoc(doc(db, "tasks", t.id));
                             } catch (error) {
                                 console.error("שגיאה במחיקת משימה:", error);
-                                alert("לא הצלחנו למחוק את המשימה.");
+                                showToast("לא הצלחנו למחוק את המשימה.", "error");
+                                deleteBtn.disabled = false;
                             }
                         }
                     });
@@ -611,7 +694,6 @@
                     container.appendChild(div);
                 });
 
-                // חישוב אחוזים ועדכון UI
                 const percent = tasks.length ? Math.round((done/tasks.length)*100) : 0;
                 document.getElementById('perc-text').innerText = percent + '%';
                 document.getElementById('main-circle').style.setProperty('--progress', (percent * 3.6) + 'deg');
