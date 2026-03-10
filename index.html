@@ -1011,9 +1011,9 @@
                             </div>
 
                             <div class="action-btns">
-                                <button class="action-btn edit-btn" title="עריכה">✏️ עריכה</button>
-                                <button class="action-btn move-btn" title="העבר למחלקה השניה">${priority === 'high' ? '⬇️ העבר' : '⬆️ העבר'}</button>
-                                <button class="action-btn delete-btn main-delete-btn" title="מחיקה">🗑️ מחיקה</button>
+                                <button class="action-btn edit-btn" title="עריכה">✏️</button>
+                                <button class="action-btn move-btn" title="העבר למחלקה השניה">${priority === 'high' ? '⬇️' : '⬆️'}</button>
+                                <button class="action-btn delete-btn main-delete-btn" title="מחיקה">🗑️</button>
                             </div>
                         </div>
                         <div class="subtasks-container">
@@ -1071,7 +1071,7 @@
                         if (!isEditing) {
                             // כניסה למצב עריכה
                             isEditing = true;
-                            editBtn.innerHTML = '💾 שמירה';
+                            editBtn.innerHTML = '💾';
                             const inputEl = document.createElement('input');
                             inputEl.type = 'text';
                             inputEl.className = 'edit-input';
@@ -1093,7 +1093,7 @@
                             } else {
                                 // ביטול עריכה אם אין שינוי
                                 isEditing = false;
-                                editBtn.innerHTML = '✏️ עריכה';
+                                editBtn.innerHTML = '✏️';
                                 textContainer.replaceChild(taskTextEl, inputEl);
                             }
                         }
@@ -1142,8 +1142,8 @@
                             </div>
 
                             <div class="action-btns">
-                                <button class="action-btn edit-sub-btn">✏️ עריכה</button>
-                                <button class="action-btn delete-btn sub-delete-btn">🗑️ מחיקה</button>
+                                <button class="action-btn edit-sub-btn">✏️</button>
+                                <button class="action-btn delete-btn sub-delete-btn">🗑️</button>
                             </div>
                         `;
                         
@@ -1181,7 +1181,7 @@
                         subEditBtn.addEventListener('click', async () => {
                             if (!isSubEditing) {
                                 isSubEditing = true;
-                                subEditBtn.innerHTML = '💾 שמירה';
+                                subEditBtn.innerHTML = '💾';
                                 const inputEl = document.createElement('input');
                                 inputEl.type = 'text';
                                 inputEl.className = 'edit-input';
@@ -1205,7 +1205,7 @@
                                     }
                                 } else {
                                     isSubEditing = false;
-                                    subEditBtn.innerHTML = '✏️ עריכה';
+                                    subEditBtn.innerHTML = '✏️';
                                     subTextContainer.replaceChild(subTextEl, inputEl);
                                 }
                             }
