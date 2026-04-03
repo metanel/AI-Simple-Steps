@@ -7,12 +7,12 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --app-bg: linear-gradient(135deg, #e0f2fe 0%, #f3f4f6 100%); /* רקע גרדיאנט עדין */
-            --app-card: rgba(255, 255, 255, 0.6); /* רקע זכוכית */
+            --app-bg: linear-gradient(180deg, #bae6fd 0%, #ffffff 100%);
+            --app-card: rgba(255, 255, 255, 0.6);
             --app-text-main: #111418;
             --app-text-muted: #6B7280;
             --app-accent: #111418;
-            --app-border: rgba(255, 255, 255, 0.4); /* גבול זכוכית */
+            --app-border: rgba(255, 255, 255, 0.4);
             --app-input-bg: rgba(255, 255, 255, 0.8);
             --app-high-priority: rgba(255, 244, 242, 0.7);
             --app-high-priority-border: #FCA5A5;
@@ -121,7 +121,7 @@
             max-width: 650px;
             padding: 32px;
             margin-top: 40px;
-            display: flex; /* תוספת למרכוז התוכן הפנימי */
+            display: flex;
             flex-direction: column;
             align-items: center;
         }
@@ -173,27 +173,26 @@
             width: 240px;
             height: 240px;
             border-radius: 50%;
-            /* גרדיאנט חדש למד ההתקדמות */
             background: conic-gradient(from 0deg, #3b82f6, #ec4899, #f97316 var(--progress), #E5E7EB 0deg);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 20px; /* הוקטן הריווח כיוון שכעת זה בתוך הכרטיסיה */
+            margin-top: 20px;
             margin-bottom: 30px;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.1); /* צל פנימי למראה תלת מימדי */
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.1);
             transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .inner-circle {
             width: 210px;
             height: 210px;
-            background: var(--app-card); /* שימוש ברקע הזכוכית */
-            backdrop-filter: blur(8px); /* טשטוש קל לטבעת הפנימית */
+            background: var(--app-card);
+            backdrop-filter: blur(8px);
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* צל חיצוני במקום פנימי */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         .percentage {
             font-size: 56px;
@@ -261,7 +260,7 @@
         }
 
         #add-task-form {
-            display: none; /* מוסתר בהתחלה */
+            display: none;
             background: var(--app-input-bg);
             padding: 20px;
             border-radius: 20px;
@@ -911,7 +910,7 @@
             if (unsubscribeSnapshot) unsubscribeSnapshot();
             
             unsubscribeSnapshot = onSnapshot(
-                query(tasksCol, where("userId", "==", uid), orderBy("createdAt", "asc")), 
+                query(tasksCol, where("userId", "==", uid), orderBy("createdAt", "desc")), 
                 (snapshot) => {
                     let tasks = [];
                     snapshot.forEach(doc => tasks.push({ id: doc.id, ...doc.data() }));
@@ -992,6 +991,9 @@
                     globalEmpty.style.display = 'none';
                 }
 
+                const highTasks = tasks.filter(t => (t.priority || 'low') === 'high');
+                const lowTasks = tasks.filter(t => (t.priority || 'low') === 'low');
+
                 tasks.forEach(t => {
                     const priority = t.priority || 'low'; 
 
@@ -1021,6 +1023,8 @@
                             </div>
 
                             <div class="action-btns">
+                                <button class="action-btn up-btn" title="העלה למעלה">↑</button>
+                                <button class="action-btn down-btn" title="הורד למטה">↓</button>
                                 <button class="action-btn edit-btn" title="עריכה">✏️</button>
                                 <button class="action-btn move-btn" title="העבר למחלקה השניה">${priority === 'high' ? '⬇️' : '⬆️'}</button>
                                 <button class="action-btn delete-btn main-delete-btn" title="מחיקה">🗑️</button>
@@ -1123,6 +1127,42 @@
                             } catch (error) {
                                 showToast("שגיאה במחיקה.", "error");
                                 mainDeleteBtn.disabled = false;
+                            }
+                        }
+                    });
+
+                    const upBtn = wrapper.querySelector('.up-btn');
+                    upBtn.addEventListener('click', async () => {
+                        const list = priority === 'high' ? highTasks : lowTasks;
+                        const index = list.findIndex(item => item.id === t.id);
+                        if (index > 0) { 
+                            upBtn.disabled = true;
+                            const prevTask = list[index - 1];
+                            const tempTime = t.createdAt;
+                            try {
+                                await updateDoc(doc(db, "tasks", t.id), { createdAt: prevTask.createdAt });
+                                await updateDoc(doc(db, "tasks", prevTask.id), { createdAt: tempTime });
+                            } catch (error) {
+                                showToast("שגיאה בהעלאת המשימה.", "error");
+                                upBtn.disabled = false;
+                            }
+                        }
+                    });
+
+                    const downBtn = wrapper.querySelector('.down-btn');
+                    downBtn.addEventListener('click', async () => {
+                        const list = priority === 'high' ? highTasks : lowTasks;
+                        const index = list.findIndex(item => item.id === t.id);
+                        if (index < list.length - 1) { 
+                            downBtn.disabled = true;
+                            const nextTask = list[index + 1];
+                            const tempTime = t.createdAt;
+                            try {
+                                await updateDoc(doc(db, "tasks", t.id), { createdAt: nextTask.createdAt });
+                                await updateDoc(doc(db, "tasks", nextTask.id), { createdAt: tempTime });
+                            } catch (error) {
+                                showToast("שגיאה בהורדת המשימה.", "error");
+                                downBtn.disabled = false;
                             }
                         }
                     });
